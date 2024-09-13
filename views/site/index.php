@@ -3,7 +3,7 @@
 /** @var yii\web\View $this */
 /** @var app\models\databaseObjects\Article[] $articles */
 
-$this->title = 'Huesio - Home';
+$this->title = 'NotHuman - Home';
 $hrefPrefix = Yii::$app->params['appBaseUrl'];
 $articleIndex = 0;
 ?>

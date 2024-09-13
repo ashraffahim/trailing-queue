@@ -23,7 +23,6 @@ class AppAsset extends AssetBundle
         'css/site.css?v=123456792',
     ];
     public $js = [
-        ['https://kit.fontawesome.com/9c12645103.js', 'crossorigin' => 'anonymous'],
         'js/common.js'
     ];
     public $depends = [

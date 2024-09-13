@@ -32,7 +32,11 @@ class User extends databaseObjects\User implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['email' => $username]);
+        return static::find()->where([
+            'or',
+            ['username' => $username],
+            ['email' => $username]
+        ])->one();
     }
 
     /**

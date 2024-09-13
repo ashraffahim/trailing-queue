@@ -2,8 +2,8 @@
 
 namespace app\models\exceptions\common;
 
-use app\models\exceptions\HuesioException;
+use app\models\exceptions\NotHumanException;
 
-class CannotUploadFileException extends HuesioException {}
+class CannotUploadFileException extends NotHumanException {}
 
 ?>

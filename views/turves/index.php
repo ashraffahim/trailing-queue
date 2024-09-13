@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="sm:max-w-lg">
         <div class="flex justify-end">
-            <?= Html::a('<i class="fa fa-plus mt-0.5"></i> Create', '/turves/create', ['class' => 'btn-classic-muted mt-0']) ?>
+            <?= Html::a('Create', '/turves/create', ['class' => 'btn-classic-muted mt-0']) ?>
         </div>
         <ul class="stacked-list">
             <?php

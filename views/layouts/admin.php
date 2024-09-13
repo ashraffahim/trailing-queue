@@ -16,7 +16,7 @@ $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
 $this->registerMetaTag(['name' => 'description', 'content' => 'Your only unbiased news source']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => 'unbiased,news,health,fitness,current.events,canada']);
-$this->registerMetaTag(['name' => 'og:title', 'content' => 'Huesio']);
+$this->registerMetaTag(['name' => 'og:title', 'content' => 'NotHuman']);
 $this->registerMetaTag(['name' => 'og:url', 'content' => Yii::$app->params['appBaseUrl']]);
 $this->registerMetaTag(['name' => 'og:description', 'content' => 'Your only unbiased news source']);
 $this->registerMetaTag(['name' => 'og:image', 'content' => Yii::$app->params['appBaseUrl'] . 'logo.png']);

@@ -58,16 +58,9 @@ $config = [
                 'login' => 'site/login',
                 'logout' => 'site/logout',
 
-                'turves/view/<nid:[\w_-]+>' => 'turves/view',
-                'turves/update/<nid:[\w_-]+>' => 'turves/update',
-                'turves/delete/<nid:[\w_-]+>' => 'turves/delete',
-
-                'bookings/view/<nid:[\w_-]+>' => 'turves/view',
-                'bookings/update/<nid:[\w_-]+>' => 'turves/update',
-                'bookings/delete/<nid:[\w_-]+>' => 'turves/delete',
-
-                'slots/update/<nid:[\w_-]+>' => 'slots/update',
-                'slots/delete/<nid:[\w_-]+>' => 'slots/delete',
+                'users/view/<nid:[\w_-]+>' => 'users/view',
+                'users/update/<nid:[\w_-]+>' => 'users/update',
+                'users/delete/<nid:[\w_-]+>' => 'users/delete',
 
                 'sitemap.xml' => 'site/sitemap',
             ],

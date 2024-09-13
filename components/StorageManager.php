@@ -8,10 +8,7 @@ use app\models\exceptions\common\FileDoesNotExistException;
 use yii\helpers\FileHelper;
 
 class StorageManager {
-    private const STORAGE_ROOT = __DIR__ . '/../../huesio_storage/';
-
-    private const ARTICLE_CONTENT = 'article_content/';
-    private const MEDIA = 'media/';
+    private const STORAGE_ROOT = __DIR__ . '/../storage/';
 
     public const READER_BUFFER_LENGTH = 512;
 
@@ -116,33 +113,6 @@ class StorageManager {
         if (!is_dir($path)) {
             FileHelper::createDirectory(self::STORAGE_ROOT . $path, 0777, true);
         }
-    }
-
-    /**
-     * Get article content file path
-     * @param string $uuid
-     * @return string
-     */
-    public static function getArticleContentFilePath(string $uuid) {
-        $path = self::ARTICLE_CONTENT;
-        self::createDirsIfDoesNotExist($path);
-        $path .= $uuid . '.html';
-
-        return $path;
-    }
-
-    /**
-     * Get media file path
-     * @param string $uuid
-     * @param string $extension
-     * @return string
-     */
-    public static function getMediaFilePath(string $uuid, string $extension) {
-        $path = self::MEDIA;
-        self::createDirsIfDoesNotExist($path);
-        $path .= $uuid . '.' . $extension;
-
-        return $path;
     }
 
     /**

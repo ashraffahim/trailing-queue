@@ -205,6 +205,10 @@
         @apply p-3
     }
 
+    .table-classic tbody th {
+        @apply text-start
+    }
+
     .table-classic td {
         @apply border-t border-gray-200
     }

@@ -101,24 +101,12 @@ class SiteController extends _MainController
                 $user->nid = Util::nanoid(User::class);
                 $user->first_name = Yii::$app->request->post('first_name');
                 $user->last_name = Yii::$app->request->post('last_name');
+                $user->username = Yii::$app->request->post('username');
                 $user->email = Yii::$app->request->post('email');
                 $user->password_hash = Yii::$app->security->generatePasswordHash($password);
     
                 if (!$user->save()) {
                     if ($user->hasErrors()) {
-                        $errors = $user->getErrors();
-                    }
-                    
-                    throw new CannotSaveException($user);
-                }
-
-                $account = new Account();
-                $account->nid = Util::nanoid(Account::class);
-                $account->name = $user->first_name . ' ' . $user->last_name;
-                $account->owner_user_id = $user->id;
-
-                if (!$account->save()) {
-                    if ($account->hasErrors()) {
                         $errors = $user->getErrors();
                     }
                     

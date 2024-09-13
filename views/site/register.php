@@ -8,7 +8,7 @@ $this->title = 'Register';
     <div class="flex min-h-full flex-1 flex-col justify-center sm:mx-auto sm:w-full sm:max-w-md px-6 py-12 lg:px-8">
         <div class="flex flex-col sm:mx-auto sm:w-full">
             <div class="text-center text-4xl font-black text-white">
-                TURF
+                QUEUE
             </div>
         </div>
 
@@ -38,9 +38,16 @@ $this->title = 'Register';
                 </div>
 
                 <div>
+                    <label for="username" class="input-label-classic">Username</label>
+                    <div class="mt-2">
+                        <input type="text" name="username" id="username" class="input-classic" required>
+                    </div>
+                </div>
+
+                <div>
                     <label for="email" class="input-label-classic">Email</label>
                     <div class="mt-2">
-                        <input type="text" name="email" id="email" class="input-classic" required>
+                        <input type="email" name="email" id="email" class="input-classic" required>
                     </div>
                 </div>
 

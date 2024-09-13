@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => 'Huesio',
+    'name' => 'Queue',
     'appBaseUrl' => 'http://localhost/',
     'imgCdnBaseUrl' => 'http://localhost/images/',
     'adminEmail' => 'admin@example.com',

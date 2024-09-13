@@ -9,15 +9,12 @@ use Yii;
  *
  * @property int $id
  * @property string $nid
- * @property string $first_name
- * @property string $last_name
+ * @property string $username
  * @property string $email
  * @property string $password_hash
- * @property int|null $account_id
- * @property int|null $email_verified
- *
- * @property Account $account
- * @property Booking[] $bookings
+ * @property string|null $first_name
+ * @property string|null $last_name
+ * @property string|null $auth_key
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -35,15 +32,17 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nid', 'first_name', 'last_name', 'email', 'password_hash'], 'required'],
-            [['account_id', 'email_verified'], 'default', 'value' => null],
-            [['account_id', 'email_verified'], 'integer'],
+            [['nid', 'username', 'email', 'password_hash'], 'required'],
             [['nid'], 'string', 'max' => 21],
-            [['first_name', 'last_name'], 'string', 'max' => 32],
-            [['email'], 'string', 'max' => 64],
-            [['password_hash'], 'string', 'max' => 128],
+            [['username'], 'string', 'max' => 15],
+            [['email'], 'string', 'max' => 200],
+            [['password_hash'], 'string', 'max' => 255],
+            [['first_name', 'last_name'], 'string', 'max' => 80],
+            [['auth_key'], 'string', 'max' => 50],
+            [['nid'], 'unique'],
             [['email'], 'email'],
             [['email'], 'unique'],
+            [['username'], 'unique'],
         ];
     }
 
@@ -55,32 +54,12 @@ class User extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nid' => 'Nid',
+            'username' => 'Username',
+            'email' => 'Email',
+            'password_hash' => 'Password',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
-            'email' => 'Email',
-            'password_hash' => 'Password Hash',
-            'account_id' => 'Account ID',
-            'email_verified' => 'Email Verified',
+            'auth_key' => 'Auth Key',
         ];
-    }
-
-    /**
-     * Gets query for [[Account]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAccount()
-    {
-        return $this->hasOne(Account::class, ['owner_user_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Bookings]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBookings()
-    {
-        return $this->hasMany(Booking::class, ['user_id' => 'id']);
     }
 }

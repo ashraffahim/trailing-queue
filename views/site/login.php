@@ -13,7 +13,7 @@ $this->title = 'Login';
 
         <div class="flex flex-col sm:mx-auto sm:w-full">
             <div class="text-center text-4xl font-black text-white">
-                TURF
+                QUEUE
             </div>
         </div>
 
