@@ -362,4 +362,9 @@ class QueuesController extends _MainController
 
         return $user->is_open ? 'Close' : 'Open';
     }
+
+    public function actionMonitor() {
+        $this->layout = 'blank';
+        return $this->render('monitor');
+    }
 }
