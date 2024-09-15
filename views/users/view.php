@@ -15,27 +15,33 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1 class="mt-6"><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Update', ['update', 'nid' => $model->nid], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'nid' => $model->nid], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="sm:max-w-lg">
+        <div class="flex mt-6 right">
+            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn-muted mt-0']) ?>
+            <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+                'class' => 'btn-danger-muted mt-0',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        </div>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'options' => ['class' => 'table-classic'],
-        'attributes' => [
-            'nid',
-            'first_name',
-            'last_name',
-            'username',
-            'email:email',
-        ],
-    ]) ?>
+        <div class="mt-6 p-5 shadow-lg rounded-md">
+            <?= DetailView::widget([
+                'model' => $model,
+                'options' => ['class' => 'table-classic'],
+                'attributes' => [
+                    'first_name',
+                    'last_name',
+                    'username',
+                    'email:email',
+                    'floor',
+                    'room',
+                    'is_open:boolean',
+                ],
+            ]) ?>
+        </div>
+    </div>
 
 </div>

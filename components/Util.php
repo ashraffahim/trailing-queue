@@ -62,6 +62,10 @@ class Util {
         return (new DateTime($date))->format($type);
     }
 
+    public static function isFetchRequest() {
+        return Yii::$app->request->headers->get('X-Requested-With') === 'fetch';
+    }
+
 }
 
 ?>

@@ -58,11 +58,12 @@ $config = [
                 'login' => 'site/login',
                 'logout' => 'site/logout',
 
-                'users/view/<nid:[\w_-]+>' => 'users/view',
-                'users/update/<nid:[\w_-]+>' => 'users/update',
-                'users/delete/<nid:[\w_-]+>' => 'users/delete',
+                'users/view/<id:\d+>' => 'users/view',
+                'users/update/<id:\d+>' => 'users/update',
+                'users/delete/<id:\d+>' => 'users/delete',
 
-                'sitemap.xml' => 'site/sitemap',
+                'queues/generate/<id:\d+>' => 'queues/generate',
+                'queues/forward/<rid:\d+>/<token:\w+>' => 'queues/forward',
             ],
         ],
        

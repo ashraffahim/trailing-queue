@@ -1,5 +1,6 @@
 $(document).on('click', evt => {
     const closeOnBlurElements = $('.close-on-blur.open');
+
     if (
         closeOnBlurElements.length > 0
         && !$(evt.target).is('.close-on-blur')

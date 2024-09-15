@@ -36,7 +36,25 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             </div>
             <ul class="py-4">
                 <li>
-                    <a href="/users" class="block px-6 py-2 hover:bg-gray-100">User</a>
+                    <a href="/report" class="block px-6 py-2 hover:bg-gray-100">Report</a>
+                </li>
+                <li>
+                    <a href="/users" class="block px-6 py-2 hover:bg-gray-100">Users</a>
+                </li>
+                <li>
+                    <a href="/roles" class="block px-6 py-2 hover:bg-gray-100">Roles</a>
+                </li>
+                <li>
+                    <a href="/queues/kiosk" class="block px-6 py-2 hover:bg-gray-100">Kiosk</a>
+                </li>
+                <li>
+                    <a href="/queues/call" class="block px-6 py-2 hover:bg-gray-100">Call</a>
+                </li>
+                <li>
+                    <a href="/permissions" class="block px-6 py-2 hover:bg-gray-100">Permissions</a>
+                </li>
+                <li>
+                    <a href="/role-permissions" class="block px-6 py-2 hover:bg-gray-100">Role Permissions</a>
                 </li>
                 <li class="nav-item">
                 <?=

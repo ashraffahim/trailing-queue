@@ -10,7 +10,7 @@ namespace app\assets;
 use yii\web\AssetBundle;
 
 /**
- * Main application asset bundle.
+ * Slots asset bundle.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

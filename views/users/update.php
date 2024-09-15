@@ -4,10 +4,11 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var app\models\databaseObjects\User $model */
+/** @var app\models\databaseObjects\Role[] $roles */
 
 $this->title = 'Update User: ' . $model->first_name . ' ' . $model->last_name;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->first_name . ' ' . $model->last_name, 'url' => ['view', 'nid' => $model->nid]];
+$this->params['breadcrumbs'][] = ['label' => $model->first_name . ' ' . $model->last_name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="user-update">
@@ -16,6 +17,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'roles' => $roles,
     ]) ?>
 
 </div>

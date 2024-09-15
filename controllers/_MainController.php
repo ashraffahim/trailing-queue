@@ -9,7 +9,6 @@ class _MainController extends Controller {
 
     public $guestAuthorizedActions = [
         'site' => '*',
-        'articles' => '*'
     ];
     
     /**

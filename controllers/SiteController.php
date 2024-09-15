@@ -96,9 +96,8 @@ class SiteController extends _MainController
             try {
                 $user = new User();
     
-                $password = Yii::$app->request->post('password');
-    
-                $user->nid = Util::nanoid(User::class);
+                $password = Yii::$app->request->post('User[password_hash]');
+
                 $user->first_name = Yii::$app->request->post('first_name');
                 $user->last_name = Yii::$app->request->post('last_name');
                 $user->username = Yii::$app->request->post('username');

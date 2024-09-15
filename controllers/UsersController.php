@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\databaseObjects\User;
 use yii\data\ActiveDataProvider;
 use app\controllers\_MainController;
+use app\models\databaseObjects\Role;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -46,7 +47,7 @@ class UsersController extends _MainController
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'nid' => SORT_DESC,
+                    'id' => SORT_DESC,
                 ]
             ],
             */
@@ -59,14 +60,14 @@ class UsersController extends _MainController
 
     /**
      * Displays a single User model.
-     * @param int $nid NID
+     * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($nid)
+    public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($nid),
+            'model' => $this->findModel($id),
         ]);
     }
 
@@ -79,49 +80,66 @@ class UsersController extends _MainController
     {
         $model = new User();
 
+        
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'nid' => $model->id]);
+            if ($model->load($this->request->post())) {
+
+                $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password_hash);
+
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
         }
 
+        $roles = Role::find()->all();
+
         return $this->render('create', [
             'model' => $model,
+            'roles' => $roles,
         ]);
     }
 
     /**
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $nid NID
+     * @param int $id ID
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($nid)
+    public function actionUpdate($id)
     {
-        $model = $this->findModel($nid);
+        $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'nid' => $model->id]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            
+            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password_hash);
+
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
+
+        $roles = Role::find()->all();
 
         return $this->render('update', [
             'model' => $model,
+            'roles' => $roles,
         ]);
     }
 
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $nid NID
+     * @param int $id ID
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($nid)
+    public function actionDelete($id)
     {
-        $this->findModel($nid)->delete();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -129,13 +147,13 @@ class UsersController extends _MainController
     /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $nid NID
+     * @param int $id ID
      * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($nid)
+    protected function findModel($id)
     {
-        if (($model = User::findOne(['nid' => $nid])) !== null) {
+        if (($model = User::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
