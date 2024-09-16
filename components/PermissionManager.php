@@ -51,7 +51,7 @@ class PermissionManager {
         'queues' => [
             'kiosk' => self::PRIVILEGE_QUEUES_CREATE_TOKEN,
             'generate' => self::PRIVILEGE_QUEUES_CREATE_TOKEN,
-            'currentToken' => self::PRIVILEGE_QUEUES_CALL,
+            'current-token' => self::PRIVILEGE_QUEUES_CALL,
             'call' => self::PRIVILEGE_QUEUES_CALL,
             'call-next' => self::PRIVILEGE_QUEUES_CALL,
             'recall' => self::PRIVILEGE_QUEUES_CALL,
@@ -63,6 +63,24 @@ class PermissionManager {
         ],
         'roles' => self::PRIVILEGE_ROLES,
         'users' => self::PRIVILEGE_USERS
+    ];
+
+    public const PRIVILEGE_MENU = [
+        self::ROLE_ADMIN => [
+            '/reports' => 'Report',
+            '/roles' => 'Roles',
+            '/users' => 'Users',
+            '/queues/monitor' => 'Monitor',
+        ],
+        self::ROLE_SERVER => [
+            '/queues/call' => 'Call'
+        ],
+        self::ROLE_KIOSK => [
+            '/queues/kiosk' => 'Kiosk'
+        ],
+        self::ROLE_MONITOR => [
+            '/queues/monitor' => 'Monitor'
+        ]
     ];
 }
 

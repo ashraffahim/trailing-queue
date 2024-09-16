@@ -4,6 +4,7 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
+use app\components\PermissionManager;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 
@@ -35,27 +36,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                 <span class="text-xl font-black">QUEUE</span>
             </div>
             <ul class="py-4">
-                <li>
-                    <a href="/reports" class="block px-6 py-2 hover:bg-gray-100">Report</a>
-                </li>
-                <li>
-                    <a href="/users" class="block px-6 py-2 hover:bg-gray-100">Users</a>
-                </li>
-                <li>
-                    <a href="/roles" class="block px-6 py-2 hover:bg-gray-100">Roles</a>
-                </li>
-                <li>
-                    <a href="/queues/kiosk" class="block px-6 py-2 hover:bg-gray-100">Kiosk</a>
-                </li>
-                <li>
-                    <a href="/queues/call" class="block px-6 py-2 hover:bg-gray-100">Call</a>
-                </li>
-                <li>
-                    <a href="/permissions" class="block px-6 py-2 hover:bg-gray-100">Permissions</a>
-                </li>
-                <li>
-                    <a href="/role-permissions" class="block px-6 py-2 hover:bg-gray-100">Role Permissions</a>
-                </li>
+                <?php foreach (PermissionManager::PRIVILEGE_MENU[\Yii::$app->user->identity->role->task] as $url => $name): ?>
+                    <li>
+                        <a href="<?= $url ?>" class="block px-6 py-2 hover:bg-gray-100"><?= $name ?></a>
+                    </li>
+                <?php endforeach; ?>
                 <li class="nav-item">
                 <?=
                     Html::beginForm(['/site/logout'])
