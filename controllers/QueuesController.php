@@ -7,6 +7,7 @@ use app\components\QueueManager;
 use app\models\databaseObjects\Queue;
 use app\controllers\_MainController;
 use app\models\databaseObjects\Role;
+use app\models\databaseObjects\User;
 use app\models\databaseObjects\UserTokenCount;
 use app\models\exceptions\common\CannotSaveException;
 use yii\web\ForbiddenHttpException;
@@ -365,7 +366,7 @@ class QueuesController extends _MainController
 
     public function actionMonitor() {
         /** @var Role[] $roles */
-        $roles = Role::find()->all();
+        $roles = Role::find()->where(['is_open' => true])->all();
 
         $roleArray = [];
 
@@ -382,10 +383,33 @@ class QueuesController extends _MainController
         ]);
     }
 
-    public function actionMonitorSocket($ids) {
+    public function actionMonitorSocket($ids, $lastId) {
         $this->response->format = Response::FORMAT_JSON;
 
         $idArray = explode(',', $ids);
 
+        $users = User::findAll(['role_id' => $idArray]);
+
+        $userIds = array_map(function($user) {
+            return $user->id;
+        }, $users);
+
+        $queue = Queue::find()
+        ->where([
+            'and',
+            ['=', 'user_id', $userIds],
+            ['>', 'id', $lastId],
+            ['=', 'date', date('Y-m-d')],
+            ['in', 'status', [
+                    QueueManager::STATUS_CREATED,
+                    QueueManager::STATUS_CALLED,
+                    QueueManager::STATUS_RECALLED,
+                ]
+            ]
+        ])
+        ->orderBy(['id' => SORT_DESC])
+        ->all();
+
+        return $queue;
     }
 }

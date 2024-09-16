@@ -1,7 +1,8 @@
 let queues = [null, null, null];
+let lastId = 0;
 
 const fetchUrl = {
-    monitor: '/queues/monitor-socket'
+    monitorSocket: '/queues/monitor-socket'
 };
 
 const roleSelectElement = $('#role-select');
@@ -57,7 +58,7 @@ const startMonitor = () => {
 
         completedFetch = false;
 
-        const response = await fetch(fetchUrl.monitor + '/' + queues.join(','), {
+        const response = await fetch(fetchUrl.monitorSocket + '/' + queues.join(',') + '/' + lastId, {
             headers,
             method: 'get',
         });
@@ -68,6 +69,12 @@ const startMonitor = () => {
         }
     
         const responseData = await response.json();
+
+        if (responseData.length > 0) {
+            lastId = responseData[0].id;
+        }
+
+        console.log(responseData);
 
         completedFetch = true;
     }, 1000);
