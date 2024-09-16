@@ -58,13 +58,17 @@ $config = [
                 'login' => 'site/login',
                 'logout' => 'site/logout',
 
+                'queues/generate/<id:\d+>' => 'queues/generate',
+                'queues/forward/<rid:\d+>/<token:\w+>' => 'queues/forward',
+                'queues/monitor-socket/<ids:[\d,]+>/<lastLoadedId:\d+>/<firstLoadedId:\d+>' => 'queues/monitor-socket',
+
                 'users/view/<id:\d+>' => 'users/view',
                 'users/update/<id:\d+>' => 'users/update',
                 'users/delete/<id:\d+>' => 'users/delete',
 
-                'queues/generate/<id:\d+>' => 'queues/generate',
-                'queues/forward/<rid:\d+>/<token:\w+>' => 'queues/forward',
-                'queues/monitor-socket/<ids:[\d,]+>/<lastLoadedId:\d+>/<firstLoadedId:\d+>' => 'queues/monitor-socket',
+                'roles/view/<id:\d+>' => 'roles/view',
+                'roles/update/<id:\d+>' => 'roles/update',
+                'roles/delete/<id:\d+>' => 'roles/delete',
             ],
         ],
        

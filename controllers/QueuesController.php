@@ -429,24 +429,50 @@ class QueuesController extends _MainController
             ])
             ->all();
 
+        $called = [];
+        $recalled = [];
         $ended = [];
 
         if ($firstLoadedId !== 0) {
-            /** @var Queue[] $endedTokens */
-            $endedTokens = Queue::find()
+            /** @var Queue[] $updatedTokens */
+            $updatedTokens = Queue::find()
                 ->where([
                     'and',
                     ['in', 'user_id', $userIds],
-                    ['>', 'id', $firstLoadedId],
+                    ['>=', 'id', $firstLoadedId],
                     ['=', 'date', date('Y-m-d')],
-                    ['=', 'status', QueueManager::STATUS_ENDED]
+                    ['in', 'status', [
+                            QueueManager::STATUS_CALLED,
+                            QueueManager::STATUS_RECALLED,
+                            QueueManager::STATUS_ENDED,
+                        ]
+                    ]
                 ])
                 ->all();
             
-            foreach ($endedTokens as $endedToken) {
-                $ended[] = [
-                    'id' => $endedToken->id
-                ];
+            foreach ($updatedTokens as $updatedToken) {
+                switch ($updatedToken->status) {
+                    case QueueManager::STATUS_CALLED:
+                        $called[] = [
+                            'id' => $updatedToken->id,
+                            'token' => $updatedToken->token,
+                            'room' => $userIdToRoleId[$updatedToken->user_id]['room'],
+                            'floor' => $userIdToRoleId[$updatedToken->user_id]['floor'],
+                        ];
+                        break;
+                    case QueueManager::STATUS_RECALLED:
+                        $recalled[] = [
+                            'id' => $updatedToken->id,
+                            'token' => $updatedToken->token,
+                            'recall_count' => $updatedToken->recall_count,
+                            'room' => $userIdToRoleId[$updatedToken->user_id]['room'],
+                            'floor' => $userIdToRoleId[$updatedToken->user_id]['floor'],
+                        ];
+                        break;
+                    case QueueManager::STATUS_ENDED:
+                        $ended[] = ['id' => $updatedToken->id];
+                        break;
+                }
             }
         }
 
@@ -462,9 +488,10 @@ class QueuesController extends _MainController
                 'date' => $token->date,
                 'time' => $token->time,
                 'status' => $token->status,
+                'recall_count' => $token->recall_count,
             ];
         }
 
-        return ['queue' => $queue, 'ended' => $ended];
+        return ['queue' => $queue, 'called' => $called, 'recalled' => $recalled, 'ended' => $ended];
     }
 }

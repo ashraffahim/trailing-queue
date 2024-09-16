@@ -10,7 +10,7 @@ const tokenPrintElement = $('#token-print');
 
 window.tokenRoles.forEach(role => {
 
-    const button = $('<button class="sm:max-w-xl w-full text-4xl uppercase py-6 m-0 bg-emerald-400 generate-token"></button>');
+    const button = $('<button class="sm:max-w-xl w-full text-4xl uppercase py-6 m-0 bg-emerald-400 rounded-md generate-token"></button>');
     button.append(role.name);
 
     button.on('click', async () => {
