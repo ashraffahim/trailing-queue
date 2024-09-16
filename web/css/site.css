@@ -718,6 +718,51 @@ input[type="number"]::-webkit-outer-spin-button,
   }
 }
 
+.pagination{
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
+}
+
+.pagination a, .pagination span{
+  display: inline-flex;
+  height: 1.75rem;
+  width: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.pagination a:hover, .pagination span:hover{
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.pagination .prev a, .pagination .next a{
+  border-radius: 0.125rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(52 211 153 / var(--tw-bg-opacity));
+}
+
+.pagination .prev.disabled span, .pagination .next.disabled span{
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 250 229 / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+.pagination .active a{
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+}
+
 .form-group{
   flex: 1 1 auto;
 }
@@ -1115,11 +1160,6 @@ input[type="number"]::-webkit-outer-spin-button,
   margin-bottom: 0px;
 }
 
-.my-6{
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
 .my-3{
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
@@ -1127,6 +1167,10 @@ input[type="number"]::-webkit-outer-spin-button,
 
 .mb-1{
   margin-bottom: 0.25rem;
+}
+
+.mb-6{
+  margin-bottom: 1.5rem;
 }
 
 .ml-3{
@@ -1159,10 +1203,6 @@ input[type="number"]::-webkit-outer-spin-button,
 
 .mt-8{
   margin-top: 2rem;
-}
-
-.mb-6{
-  margin-bottom: 1.5rem;
 }
 
 .block{

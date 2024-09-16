@@ -1,6 +1,8 @@
 <?php
 
 use app\models\databaseObjects\Queue;
+use app\models\databaseObjects\User;
+use app\models\databaseObjects\UserTokenCount;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -24,23 +26,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 [
                     'label' => 'Name',
-                    'value' => function(Queue $model) {
+                    'value' => function(UserTokenCount $model) {
                         return $model->user->first_name . ' ' . $model->user->last_name;
                     }
                 ],
-                'token',
+                'count',
+                'served',
                 [
                     'label' => 'Date',
-                    'value' => function(Queue $model) {
-                        return date('d M, Y', strtotime($model->date)) . ' ' . $model->time;
-                    }
-                ],
-                [
-                    'label' => 'Ref',
-                    'value' => function(Queue $model) {
-                        if (is_null($model->trail_id)) return '';
-
-                        return $model->trail->user->first_name . ' ' . $model->trail->user->last_name . ' (#' . $model->trail_id . ')';
+                    'value' => function(UserTokenCount $model) {
+                        return date('d M, Y', strtotime($model->date));
                     }
                 ],
             ],

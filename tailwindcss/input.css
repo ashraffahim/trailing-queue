@@ -68,6 +68,26 @@
         @apply inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white
     }
 
+    .pagination {
+        @apply flex gap-x-2 my-6 justify-center
+    }
+
+    .pagination a, .pagination span {
+        @apply inline-flex h-7 w-7 justify-center items-center rounded-sm shadow-sm hover:shadow-md
+    }
+
+    .pagination .prev a, .pagination .next a {
+        @apply rounded-sm bg-emerald-400
+    }
+
+    .pagination .prev.disabled span, .pagination .next.disabled span {
+        @apply bg-emerald-100 text-gray-400
+    }
+
+    .pagination .active a {
+        @apply bg-gray-200
+    }
+
     .form-group {
         @apply flex-auto
     }

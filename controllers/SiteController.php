@@ -134,7 +134,7 @@ class SiteController extends _MainController
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack('/admin');
+            return $this->goBack('/');
         }
 
         $model->password = '';
