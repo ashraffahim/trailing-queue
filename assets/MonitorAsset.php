@@ -5,12 +5,12 @@ namespace app\assets;
 use yii\web\AssetBundle;
 
 /**
- * Call asset bundle.
+ * Monitor asset bundle.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class CallAsset extends AssetBundle
+class MonitorAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
@@ -18,7 +18,7 @@ class CallAsset extends AssetBundle
     public $css = [];
 
     public $js = [
-        'js/call.js?v=1725092200',
+        'js/monitor.js?v=1725092200',
     ];
 
     public $jsOptions = ['position' => \yii\web\View::POS_END];

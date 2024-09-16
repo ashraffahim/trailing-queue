@@ -1,11 +1,16 @@
 <?php
 
+use app\assets\SelectClassicAsset;
+use app\components\PermissionManager;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\models\databaseObjects\Role $model */
 /** @var yii\widgets\ActiveForm $form */
+
+SelectClassicAsset::register($this);
+$this->registerJs('selectClassic()');
 ?>
 
 <div class="roles-form">
@@ -23,6 +28,19 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-xs']) ?>
 
             <?= $form->field($model, 'token_prefix')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-xs']) ?>
+
+            <div class="form-group">
+                <label class="input-label-classic">Task</label>
+                <div class="select-classic close-on-blur sm:max-w-60" id="duration-type" data-name="Role[task]" tabindex="0">
+                    <div class="select-value"><?= is_null($model->task) ? '' : PermissionManager::ROLES[$model->task] ?><input type="hidden" name="Role[task]" value="<?= $model->task ?>"></div>
+                    <div class="select-options">
+                        <a class="select-option" data-value="">&nbsp;</a>
+                        <?php foreach (PermissionManager::ROLES as $id => $name): ?>
+                            <a class="select-option" data-value="<?= $id ?>"><?= $name ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
 
             <?= $form->field($model, 'is_open')->checkbox() ?>
 

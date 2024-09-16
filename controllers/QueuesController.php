@@ -364,7 +364,28 @@ class QueuesController extends _MainController
     }
 
     public function actionMonitor() {
+        /** @var Role[] $roles */
+        $roles = Role::find()->all();
+
+        $roleArray = [];
+
+        foreach ($roles as $role) {
+            $roleArray[] = [
+                'id' => $role->id,
+                'name' => $role->name,
+            ];
+        }
+
         $this->layout = 'blank';
-        return $this->render('monitor');
+        return $this->render('monitor', [
+            'roles' => $roleArray
+        ]);
+    }
+
+    public function actionMonitorSocket($ids) {
+        $this->response->format = Response::FORMAT_JSON;
+
+        $idArray = explode(',', $ids);
+
     }
 }

@@ -15,7 +15,9 @@ function selectClassic(options) {
     const finalOptions = {...defaultOptions, ...options};
 
     $(finalOptions.selectSelector).each(function() {
-        $(this).val($(this).find(`${finalOptions.valueSelector} input[name="${$(this).data(finalOptions.nameDataAttr)}"]`).val());
+        const value = $(this).find(`${finalOptions.valueSelector} input[name="${$(this).data(finalOptions.nameDataAttr)}"]`).val();
+        $(this).val(value);
+
     });
 
     $(document).on('click', function(evt) {

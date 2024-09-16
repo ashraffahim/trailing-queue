@@ -64,6 +64,7 @@ $config = [
 
                 'queues/generate/<id:\d+>' => 'queues/generate',
                 'queues/forward/<rid:\d+>/<token:\w+>' => 'queues/forward',
+                'queues/monitor-socket/<ids:[\d,]+>' => 'queues/monitor-socket',
             ],
         ],
        
