@@ -14,6 +14,15 @@ class QueueManager {
     public const STATUS_ON_HOLD = 4;
     public const STATUS_ENDED = 5;
 
+    public const STATUS_NAME = [
+        self::STATUS_CREATED => 'Created',
+        self::STATUS_CALLED => 'Called',
+        self::STATUS_RECALLED => 'Recalled',
+        self::STATUS_IN_PROGRESS => 'In Progress',
+        self::STATUS_ON_HOLD => 'On Hold',
+        self::STATUS_ENDED => 'Ended',
+    ];
+
     /**
      * @param string $prefix
      * @param int $number

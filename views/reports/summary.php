@@ -8,8 +8,9 @@ use yii\grid\GridView;
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $queue */
+/** @var string $date */
 
-$this->title = 'Report';
+$this->title = 'Summary';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="report-index">
@@ -17,6 +18,18 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1 class="mt-6"><?= Html::encode($this->title) ?></h1>
 
     <div class="sm:max-w-2xl">
+        
+        <form>
+            <div class="flex items-end gap-x-2 my-6">
+                <div class="form-group">
+                    <label for="date" class="input-label-classic">Date</label>
+                    <input type="date" name="date" id="date" class="input-classic" value="<?= $date ?>">
+                </div>
+                <div class="form-group">
+                    <button class="btn-classic">Filter</button>
+                </div>
+            </div>
+        </form>
 
         <?= GridView::widget([
             'dataProvider' => $queue,

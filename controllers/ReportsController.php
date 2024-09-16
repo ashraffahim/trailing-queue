@@ -17,8 +17,9 @@ class ReportsController extends _MainController
     public function actionIndex() {
         $oneMonthBack = (new DateTime())->modify('-1 month')->format('Y-m-d');
         
-        $from = $this->request->get('fd', $oneMonthBack);
-        $to = $this->request->get('td', date('Y-m-d'));
+        $from = $this->request->get('from', $oneMonthBack);
+        $to = $this->request->get('to', date('Y-m-d'));
+        $token = $this->request->get('token');
 
         $queue = Queue::find()
         ->where([
@@ -26,7 +27,10 @@ class ReportsController extends _MainController
             ['>=', 'date', $from],
             ['<=', 'date', $to]
         ]);
-        // ->groupBy(['user_id']);
+        
+        if (!is_null($token)) {
+            $queue->andWhere(['token' => $token]);
+        }
         
         $dataProvider = new ActiveDataProvider([
             'query' => $queue,
@@ -43,7 +47,10 @@ class ReportsController extends _MainController
         ]);
 
         return $this->render('index', [
-            'queue' => $dataProvider
+            'queue' => $dataProvider,
+            'from' => $from,
+            'to' => $to,
+            'token' => $token,
         ]);
     }
 
@@ -71,7 +78,8 @@ class ReportsController extends _MainController
         ]);
 
         return $this->render('summary', [
-            'queue' => $dataProvider
+            'queue' => $dataProvider,
+            'date' => $date
         ]);
     }
 }
