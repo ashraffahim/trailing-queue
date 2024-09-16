@@ -11,9 +11,10 @@ use yii\grid\GridView;
 /** @var string $date */
 
 $this->title = 'Summary';
+$this->params['breadcrumbs'][] = ['label' => 'Report', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="report-index">
+<div class="report-summary">
 
     <h1 class="mt-6"><?= Html::encode($this->title) ?></h1>
 

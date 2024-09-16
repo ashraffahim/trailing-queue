@@ -15,6 +15,10 @@ use yii\data\ActiveDataProvider;
 class ReportsController extends _MainController
 {
     public function actionIndex() {
+        return $this->render('index');
+    }
+
+    public function actionQueue() {
         $oneMonthBack = (new DateTime())->modify('-1 month')->format('Y-m-d');
         
         $from = $this->request->get('from', $oneMonthBack);
@@ -46,7 +50,7 @@ class ReportsController extends _MainController
            
         ]);
 
-        return $this->render('index', [
+        return $this->render('queue', [
             'queue' => $dataProvider,
             'from' => $from,
             'to' => $to,
