@@ -103,8 +103,9 @@ class QueuesController extends _MainController
         return $responseData;
     }
 
-    public function actionCurrentToken() {
-        
+    public function actionCurrentToken()
+    {
+
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
         /** @var Queue $previousQueue */
@@ -118,12 +119,12 @@ class QueuesController extends _MainController
                     QueueManager::STATUS_IN_PROGRESS
                 ]
             ])->one();
-        
+
         if (is_null($currentQueue)) {
             \Yii::$app->response->statusCode = 204;
             return $this->asJson([]);
         }
-    
+
         return $this->asJson([
             'token' => $currentQueue->token,
             'time' => $currentQueue->time,
@@ -171,7 +172,7 @@ class QueuesController extends _MainController
                     QueueManager::STATUS_IN_PROGRESS
                 ]
             ])->one();
-        
+
         if (!is_null($previousQueue)) {
             $previousQueue->status = QueueManager::STATUS_ENDED;
             $previousQueue->end_time = date('h:i:s');
@@ -196,8 +197,8 @@ class QueuesController extends _MainController
 
         /** @var UserTokenCount $userTokenCount */
         $userTokenCount = UserTokenCount::find()
-        ->where(['user_id' => $user->id, 'date' => date('Y-m-d')])
-        ->one();
+            ->where(['user_id' => $user->id, 'date' => date('Y-m-d')])
+            ->one();
 
         if (is_null($userTokenCount)) throw new ForbiddenHttpException('Counter closed');
 
@@ -206,7 +207,7 @@ class QueuesController extends _MainController
         try {
             $queue->status = QueueManager::STATUS_CALLED;
             $queue->call_time = date('h:i:s');
-    
+
             if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
 
             $userTokenCount->served += 1;
@@ -227,7 +228,8 @@ class QueuesController extends _MainController
         ]);
     }
 
-    public function actionRecall() {
+    public function actionRecall()
+    {
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
         $user = \Yii::$app->user->identity;
@@ -252,9 +254,10 @@ class QueuesController extends _MainController
         if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
     }
 
-    public function actionForward($rid, $token) {
+    public function actionForward($rid, $token)
+    {
         $this->response->format = Response::FORMAT_RAW;
-        
+
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
         $currentUserId = \Yii::$app->user->identity->id;
@@ -296,7 +299,7 @@ class QueuesController extends _MainController
             ->one();
 
         if (is_null($userTokenCount->id)) throw new NotFoundHttpException('All counters closed');
-        
+
         $transaction = \Yii::$app->db->beginTransaction();
 
         try {
@@ -304,7 +307,7 @@ class QueuesController extends _MainController
             $currentQueue->end_time = date('h:i:s');
 
             if (!$currentQueue->save()) throw new CannotSaveException($currentQueue, 'Failed');
-            
+
             $userTokenCount->count += 1;
 
             if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'failed');
@@ -325,14 +328,14 @@ class QueuesController extends _MainController
 
             throw $e;
         }
-
     }
 
     public function actionCallToken($token) {}
 
-    public function actionOpenClose() {
+    public function actionOpenClose()
+    {
         $this->response->format = Response::FORMAT_RAW;
-        
+
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
         $user = \Yii::$app->user->identity;
@@ -343,7 +346,7 @@ class QueuesController extends _MainController
 
         try {
             $user->is_open = !$user->is_open;
-    
+
             if (!$user->save()) throw new CannotSaveException($user, 'Failed');
 
             if (is_null($userTokenCount)) {
@@ -364,7 +367,8 @@ class QueuesController extends _MainController
         return $user->is_open ? 'Close' : 'Open';
     }
 
-    public function actionMonitor() {
+    public function actionMonitor()
+    {
         /** @var Role[] $roles */
         $roles = Role::find()->where(['is_open' => true])->all();
 
@@ -383,33 +387,84 @@ class QueuesController extends _MainController
         ]);
     }
 
-    public function actionMonitorSocket($ids, $lastId) {
+    public function actionMonitorSocket($ids, $lastLoadedId, $firstLoadedId)
+    {
         $this->response->format = Response::FORMAT_JSON;
 
         $idArray = explode(',', $ids);
 
         $users = User::findAll(['role_id' => $idArray]);
 
-        $userIds = array_map(function($user) {
-            return $user->id;
-        }, $users);
+        $userIds = [];
 
-        $queue = Queue::find()
-        ->where([
-            'and',
-            ['=', 'user_id', $userIds],
-            ['>', 'id', $lastId],
-            ['=', 'date', date('Y-m-d')],
-            ['in', 'status', [
-                    QueueManager::STATUS_CREATED,
-                    QueueManager::STATUS_CALLED,
-                    QueueManager::STATUS_RECALLED,
+        $userIdToRoleId = [];
+
+        foreach ($users as $user) {
+            $userIdToRoleId[$user->id] = [
+                'role' => $user->role_id,
+                'floor' => $user->floor,
+                'room' => $user->room,
+            ];
+
+            $userIds[] = $user->id;
+        }
+
+        /** @var Queue[] $tokens */
+        $tokens = Queue::find()
+            ->where([
+                'and',
+                ['in', 'user_id', $userIds],
+                ['>', 'id', $lastLoadedId],
+                ['=', 'date', date('Y-m-d')],
+                [
+                    'in',
+                    'status',
+                    [
+                        QueueManager::STATUS_CREATED,
+                        QueueManager::STATUS_CALLED,
+                        QueueManager::STATUS_IN_PROGRESS,
+                        QueueManager::STATUS_RECALLED,
+                    ]
                 ]
-            ]
-        ])
-        ->orderBy(['id' => SORT_DESC])
-        ->all();
+            ])
+            ->all();
 
-        return $queue;
+        $ended = [];
+
+        if ($firstLoadedId !== 0) {
+            /** @var Queue[] $endedTokens */
+            $endedTokens = Queue::find()
+                ->where([
+                    'and',
+                    ['in', 'user_id', $userIds],
+                    ['>', 'id', $firstLoadedId],
+                    ['=', 'date', date('Y-m-d')],
+                    ['=', 'status', QueueManager::STATUS_ENDED]
+                ])
+                ->all();
+            
+            foreach ($endedTokens as $endedToken) {
+                $ended[] = [
+                    'id' => $endedToken->id
+                ];
+            }
+        }
+
+        $queue = [];
+
+        foreach ($tokens as $token) {
+            $queue[] = [
+                'id' => $token->id,
+                'token' => $token->token,
+                'role_id' => $userIdToRoleId[$token->user_id]['role'],
+                'floor' => $userIdToRoleId[$token->user_id]['floor'],
+                'room' => $userIdToRoleId[$token->user_id]['room'],
+                'date' => $token->date,
+                'time' => $token->time,
+                'status' => $token->status,
+            ];
+        }
+
+        return ['queue' => $queue, 'ended' => $ended];
     }
 }

@@ -1,5 +1,6 @@
 let queues = [null, null, null];
-let lastId = 0;
+let lastLoadedId = 0;
+let firstLoadedId = 0;
 
 const fetchUrl = {
     monitorSocket: '/queues/monitor-socket'
@@ -16,6 +17,8 @@ queues.forEach((num, index) => {
     window.queueRoles.forEach(role => {
         select.append('<option value="' + role.id + '">' + role.name + '</option>');
     });
+
+    queues[index] = window.queueRoles[0].id;
 
     select.change('click', () => {
         queues[index] = select.val();
@@ -42,6 +45,8 @@ startButtonElement.on('click', () => {
             </div>
         `);
     });
+
+    startMonitor();
 });
 
 roleSelectElement.append(startButtonElement);
@@ -58,7 +63,7 @@ const startMonitor = () => {
 
         completedFetch = false;
 
-        const response = await fetch(fetchUrl.monitorSocket + '/' + queues.join(',') + '/' + lastId, {
+        const response = await fetch(fetchUrl.monitorSocket + '/' + queues.join(',') + '/' + lastLoadedId + '/' + firstLoadedId, {
             headers,
             method: 'get',
         });
@@ -70,11 +75,28 @@ const startMonitor = () => {
     
         const responseData = await response.json();
 
-        if (responseData.length > 0) {
-            lastId = responseData[0].id;
+        const {queue, ended} = responseData;
+
+        if (queue.length > 0) {
+            lastLoadedId = queue[queue.length - 1].id;
+            firstLoadedId = queue[0].id;
+
+            queue.forEach(queue => {
+                $(`#role-column-${queue.role_id}`).append(`
+                    <div data-id="${queue.id}" class="flex text-lg p-3">
+                        <div class="w-1/3">${queue.token}</div>
+                        <div class="w-1/3">${queue.floor}</div>
+                        <div class="w-1/3">${queue.room}</div>
+                    </div>
+                `);
+            });
         }
 
-        console.log(responseData);
+        if (ended.length > 0) {
+            ended.forEach(ending => {
+                $(`[data-id="${ending.id}"]`).remove();
+            })
+        }
 
         completedFetch = true;
     }, 1000);
