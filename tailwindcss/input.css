@@ -68,26 +68,6 @@
         @apply inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white
     }
 
-    .pagination {
-        @apply flex gap-x-2 my-6 justify-center
-    }
-
-    .pagination a, .pagination span {
-        @apply inline-flex h-7 w-7 justify-center items-center rounded-sm shadow-sm hover:shadow-md
-    }
-
-    .pagination .prev a, .pagination .next a {
-        @apply rounded-sm bg-emerald-400
-    }
-
-    .pagination .prev.disabled span, .pagination .next.disabled span {
-        @apply bg-emerald-100 text-gray-400
-    }
-
-    .pagination .active a {
-        @apply bg-gray-200
-    }
-
     .form-group {
         @apply flex-auto
     }
@@ -97,7 +77,7 @@
     }
 
     .select-classic.open {
-        @apply ring-2 ring-indigo-600
+        @apply ring-2 ring-emerald-400
     }
 
     .select-classic:after {
@@ -119,7 +99,7 @@
     }
 
     .input-classic {
-        @apply block w-full rounded-md px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 focus-visible:outline-none
+        @apply block w-full rounded-md px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-400 sm:text-sm sm:leading-6 focus-visible:outline-none
     }
 
     .input-label-classic {
@@ -135,15 +115,15 @@
     }
 
     .btn-classic {
-        @apply flex mt-6 justify-center items-center gap-x-1 rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600
+        @apply flex mt-6 justify-center items-center gap-x-1 rounded-md bg-emerald-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400
     }
 
     .btn-classic:disabled {
-        @apply opacity-50 focus-visible:outline-offset-0 hover:bg-indigo-600 cursor-not-allowed
+        @apply opacity-50 focus-visible:outline-offset-0 hover:bg-emerald-400 cursor-not-allowed
     }
 
     .btn-classic-muted {
-        @apply flex mt-6 justify-center items-center gap-x-1 rounded-md bg-white px-3 py-1.5 text-sm font-semibold leading-6 text-indigo-600 hover:bg-indigo-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600
+        @apply flex mt-6 justify-center items-center gap-x-1 rounded-md bg-white px-3 py-1.5 text-sm font-semibold leading-6 text-emerald-400 hover:bg-emerald-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400
     }
 
     .btn-muted {
@@ -161,7 +141,7 @@
     .input-group {
         padding-left: 7px;
         padding-right: 7px;
-        @apply flex w-full py-1.5 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:text-sm sm:leading-6
+        @apply flex w-full py-1.5 rounded-md text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus-within:ring-2 focus-within:ring-inset focus-within:ring-emerald-400 sm:text-sm sm:leading-6
     }
 
     .input-group .input-classic, .input-group .select-classic {
@@ -231,5 +211,29 @@
 
     .table-classic td {
         @apply border-t border-gray-200
+    }
+
+    .grid-view .summary {
+        @apply text-right p-3 text-gray-400
+    }
+
+    .pagination {
+        @apply flex gap-x-2 my-6 justify-center
+    }
+
+    .pagination a, .pagination span {
+        @apply inline-flex h-7 w-7 justify-center items-center rounded-md shadow-sm hover:shadow-md
+    }
+
+    .pagination .prev a, .pagination .next a {
+        @apply rounded-sm bg-emerald-400
+    }
+
+    .pagination .prev.disabled span, .pagination .next.disabled span {
+        @apply bg-emerald-100 text-gray-400
+    }
+
+    .pagination .active a {
+        @apply bg-gray-200
     }
 }
