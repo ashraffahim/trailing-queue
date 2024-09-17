@@ -3,6 +3,7 @@
 use app\assets\MonitorAsset;
 
 /** @var array $roles */
+/** @var array $ads */
 
 MonitorAsset::register($this);
 ?>
@@ -13,7 +14,7 @@ MonitorAsset::register($this);
             <div id="queue" class="flex flex-col flex-auto min-h-screen border border-emerald-100"></div>
         </div>
         <div class="flex flex-col w-1/2">
-            <div id="ads" class="w-full h-[50vh]"></div>
+            <div id="ads" class="flex justify-center items-center w-full h-[50vh]"></div>
             <div id="role-columns" class="flex flex-row w-full"></div>
         </div>
     </div>
@@ -25,5 +26,6 @@ MonitorAsset::register($this);
     </div>
 </div>
 <script type="text/javascript">
+window.ads = <?= json_encode($ads) ?>;
 window.queueRoles = <?= json_encode($roles) ?>;
 </script>

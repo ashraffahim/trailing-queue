@@ -400,9 +400,18 @@ class QueuesController extends _MainController
             ];
         }
 
+        $ads = glob(\Yii::getAlias('@app/web/data/ads/*'));
+
+        $adsArray = [];
+
+        foreach ($ads as $ad) {
+            $adsArray[] = '/data/ads/' . basename($ad);
+        }
+
         $this->layout = 'blank-dark';
         return $this->render('monitor', [
-            'roles' => $roleArray
+            'roles' => $roleArray,
+            'ads' => $adsArray
         ]);
     }
 

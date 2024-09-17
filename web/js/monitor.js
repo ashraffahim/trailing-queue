@@ -3,7 +3,10 @@ let lastLoadedId = 0;
 let firstLoadedId = 0;
 let calledTokens = [];
 let recalledTokens = {};
+let adElements = [];
 
+const imageExtentions = ['jpg', 'png', 'jpeg', 'webp', 'gif', 'jfif'];
+const videoExtentions = ['mp4', 'mov', 'wmv', 'avi', 'webm', 'mpeg-2'];
 const fetchUrl = {
     monitorSocket: '/queues/monitor-socket'
 };
@@ -12,8 +15,11 @@ const roleSelectElement = $('#role-select');
 const roleColumnsElement = $('#role-columns');
 const queueContainerElement = $('#queue-container');
 const queueElement = $('#queue');
+const adsElement = $('#ads');
 
 const roleModalElement = $('#role-modal');
+
+const startButtonElement = $('<button class="text-lg">START</button>');
 
 queues.forEach((num, index) => {
     const select = $('<select class="text-lg"></select>');
@@ -39,7 +45,29 @@ queueContainerElement.prepend(`
     </div>
 `);
 
-const startButtonElement = $('<button class="text-lg">START</button>');
+window.ads.forEach(ad => {
+    const adNameParts = ad.split('.');
+    const adExt = adNameParts[adNameParts.length - 1].toLowerCase();
+ 
+    if (imageExtentions.includes(adExt)) {
+        const image = new Image();
+        image.src = ad;
+        image.style.maxWidth = '100%';
+        image.style.maxHeight = '100%';
+        image.classList.add('hidden');
+
+        adElements.push(image);
+
+        adsElement.append(image);
+    } else if (videoExtentions.includes(adExt)) {
+        const video = $('<video></video>');
+        video.attr('src', ad);
+        video.addClass('hidden');
+        
+        adElements.push(video[0]);
+        adsElement.append(video);
+    }
+});
 
 startButtonElement.on('click', () => {
     roleModalElement.addClass('hidden');
@@ -59,6 +87,7 @@ startButtonElement.on('click', () => {
     });
 
     startMonitor();
+    startAdsSlide();
 });
 
 
@@ -153,6 +182,51 @@ const startMonitor = () => {
 
         completedFetch = true;
     }, 1000);
+}
+
+const startAdsSlide = () => {
+    let interval = null;
+    let slideIndex = 0;
+
+    const slideDelay = 1000;
+
+    const slideProcess = () => {
+        let prevSlideIndex = 0;
+
+        if (!adElements[slideIndex]) {
+            slideIndex = 0;
+            prevSlideIndex = 0;
+        }
+
+        if (slideIndex !== 0) {
+            prevSlideIndex = slideIndex - 1;
+        } else if (adElements.length > 1) {
+            prevSlideIndex = adElements.length - 1;
+        }
+
+        adElements[prevSlideIndex].classList.add('hidden');
+
+        adElements[slideIndex].classList.remove('hidden');
+
+        if (adElements[slideIndex].tagName === 'VIDEO') {
+            clearInterval(interval);
+
+            if (adElements[slideIndex].paused) {
+                adElements[slideIndex].play();
+            }
+
+            adElements[slideIndex].onended = () => {
+                interval = setInterval(slideProcess, slideDelay);
+            }
+
+        }
+
+        slideIndex++;
+    }
+
+    if (adElements.length > 0) {
+        interval = setInterval(slideProcess, slideDelay);
+    }
 }
 
 const textToSpeech = speak => {
