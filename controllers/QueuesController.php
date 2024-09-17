@@ -29,7 +29,7 @@ class QueuesController extends _MainController
             $roleArray[] = ['id' => $role->id, 'name' => $role->name];
         }
 
-        $this->layout = 'blank';
+        $this->layout = 'blank-dark';
 
         return $this->render('kiosk', [
             'roles' => $roleArray
@@ -162,7 +162,7 @@ class QueuesController extends _MainController
             $rolesArray[] = ['id' => $role->id, 'name' => $role->name];
         }
 
-        $this->layout = 'blank';
+        $this->layout = 'blank-dark';
         return $this->render('call', [
             'openCloseText' => \Yii::$app->user->identity->is_open ? 'Close' : 'Open',
             'forwardRoles' => $rolesArray
@@ -395,7 +395,7 @@ class QueuesController extends _MainController
             ];
         }
 
-        $this->layout = 'blank';
+        $this->layout = 'blank-dark';
         return $this->render('monitor', [
             'roles' => $roleArray
         ]);
