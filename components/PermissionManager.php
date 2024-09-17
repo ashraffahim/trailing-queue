@@ -14,6 +14,8 @@ class PermissionManager {
 
     public const PRIVILEGE_USERS = 'users';
 
+    public const PRIVILEGE_ADS = 'ads';
+
     // Roles
     public const ROLE_ADMIN = 1;
     public const ROLE_SERVER = 2;
@@ -33,7 +35,8 @@ class PermissionManager {
             self::PRIVILEGE_REPORT,
             self::PRIVILEGE_ROLES,
             self::PRIVILEGE_USERS,
-            self::PRIVILEGE_QUEUES_MONITOR
+            self::PRIVILEGE_QUEUES_MONITOR,
+            self::PRIVILEGE_ADS
         ],
         self::ROLE_SERVER => [
             self::PRIVILEGE_QUEUES_CALL
@@ -62,12 +65,14 @@ class PermissionManager {
             'monitor-socket' => self::PRIVILEGE_QUEUES_MONITOR,
         ],
         'roles' => self::PRIVILEGE_ROLES,
-        'users' => self::PRIVILEGE_USERS
+        'users' => self::PRIVILEGE_USERS,
+        'ads' => self::PRIVILEGE_ADS
     ];
 
     public const PRIVILEGE_MENU = [
         self::ROLE_ADMIN => [
             '/reports' => 'Report',
+            '/ads' => 'Ads',
             '/roles' => 'Roles',
             '/users' => 'Users',
             '/queues/monitor' => 'Monitor',

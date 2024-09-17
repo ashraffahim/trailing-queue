@@ -69,6 +69,8 @@ $config = [
                 'roles/view/<id:\d+>' => 'roles/view',
                 'roles/update/<id:\d+>' => 'roles/update',
                 'roles/delete/<id:\d+>' => 'roles/delete',
+
+                'ads/delete/<name:.+>' => 'ads/delete',
             ],
         ],
        
