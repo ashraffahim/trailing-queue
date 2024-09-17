@@ -48,9 +48,8 @@ class QueuesController extends _MainController
         if (is_null($role)) throw new NotFoundHttpException('Unknown service');
 
         /** @var \app\models\databaseObjects\User[] $users */
-        $users = $role->getUsers()
+        $users = $role->users;
         // ->andWhere(['is_open' => true])
-        ->all();
 
         if (empty($users)) throw new NotFoundHttpException('No servers appointed');
 
@@ -58,13 +57,12 @@ class QueuesController extends _MainController
             return $user->id;
         }, $users);
 
-        /** @var UserTokenCount $userTokenCount */
-        $userTokenCount = UserTokenCount::find()
+        /** @var UserTokenCount[] $allUserTokenCount */
+        $allUserTokenCount = UserTokenCount::find()
             ->where(['user_id' => $userIds, 'date' => date('Y-m-d')])
-            ->select(['*', 'MIN(`count` - `served`) AS `in_queue`'])
+            ->select(['*', '(`count` - `served`) AS `in_queue`'])
             ->orderBy(['in_queue' => SORT_ASC])
-            ->limit(1)
-            ->one();
+            ->all();
 
         $responseData = [];
 
@@ -72,7 +70,7 @@ class QueuesController extends _MainController
 
         try {
 
-            if (is_null($userTokenCount->id)) {
+            if (empty($allUserTokenCount)) {
                 foreach ($userIds as $userId) {
                     $newUserTokenCount = new UserTokenCount();
                     $newUserTokenCount->user_id = $userId;
@@ -85,6 +83,13 @@ class QueuesController extends _MainController
 
                 $userTokenCount = $newUserTokenCount;
             }
+            
+            $userTokenCount = $allUserTokenCount[0];
+            $roleTokenCount = 1;
+
+            foreach ($allUserTokenCount as $summingUserTokenCount) {
+                $roleTokenCount += $summingUserTokenCount->count;
+            }
 
             $assignedUser = $users[array_search($userTokenCount->user_id, $userIds)];
 
@@ -93,7 +98,7 @@ class QueuesController extends _MainController
             if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'Failed');
 
             $queue = new Queue();
-            $queue->token = QueueManager::createToken($role->token_prefix, $userTokenCount->count);
+            $queue->token = QueueManager::createToken($role->token_prefix, $roleTokenCount);
             $queue->user_id = $assignedUser->id;
             $queue->date = date('Y-m-d');
             $queue->time = date('h:i:s');
