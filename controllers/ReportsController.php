@@ -23,7 +23,7 @@ class ReportsController extends _MainController
         
         $from = $this->request->get('from', $oneMonthBack);
         $to = $this->request->get('to', date('Y-m-d'));
-        $token = $this->request->get('token');
+        $token = $this->request->get('token', '');
 
         $queue = Queue::find()
         ->where([
@@ -32,7 +32,7 @@ class ReportsController extends _MainController
             ['<=', 'date', $to]
         ]);
         
-        if (!is_null($token)) {
+        if ($token !== '') {
             $queue->andWhere(['token' => $token]);
         }
         

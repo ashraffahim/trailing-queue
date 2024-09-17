@@ -25,6 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'tableOptions' => ['class' => 'table-classic'],
+            'summary' => '{begin} - {end} / {totalCount}',
+            'layout' => '{summary}{items}{pager}',
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
 

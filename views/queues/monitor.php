@@ -8,7 +8,14 @@ MonitorAsset::register($this);
 ?>
 
 <div class="queues-monitor">
-    <div id="role-columns" class="flex w-full">
+    <div class="flex flex-row w-full">
+        <div id="queue-container" class="w-1/2">
+            <div id="queue" class="flex flex-col flex-auto min-h-screen border border-slate-400"></div>
+        </div>
+        <div class="flex flex-col w-1/2">
+            <div id="ads" class="w-full"></div>
+            <div id="role-columns" class="flex flex-row w-full"></div>
+        </div>
     </div>
     <div id="role-modal" class="fixed inset-0 flex flex-col justify-center items-center">
         <div class="fixed inset-0 bg-black opacity-30"></div>

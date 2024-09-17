@@ -10,6 +10,8 @@ const fetchUrl = {
 
 const roleSelectElement = $('#role-select');
 const roleColumnsElement = $('#role-columns');
+const queueContainerElement = $('#queue-container');
+const queueElement = $('#queue');
 
 const roleModalElement = $('#role-modal');
 
@@ -28,6 +30,14 @@ queues.forEach((num, index) => {
 
     roleSelectElement.append(select);
 });
+
+queueContainerElement.prepend(`
+    <div class="flex p-3 bg-emerald-400">
+        <div class="text-4xl w-1/3">Token</div>
+        <div class="text-4xl w-1/3">Floor</div>
+        <div class="text-4xl w-1/3">Room</div>
+    </div>
+`);
 
 const startButtonElement = $('<button class="text-lg">START</button>');
 
