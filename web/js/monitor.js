@@ -46,7 +46,7 @@ startButtonElement.on('click', () => {
 
     queues.forEach(role => {
         roleColumnsElement.append(`
-            <div id="role-column-${role}" class="flex flex-col flex-auto min-h-screen border border-slate-400">
+            <div id="role-column-${role}" class="flex flex-col flex-auto min-h-screen border border-emerald-100">
                 <div class="role-column-header flex p-3 bg-emerald-400">
                     <div class="text-lg w-1/3">Token</div>
                     <div class="text-lg w-1/3">Floor</div>
@@ -102,20 +102,16 @@ const startMonitor = () => {
 
             queue.forEach(queue => {
                 try {
-                    $(`#role-column-${queue.role_id}`).append(`
-                        <div data-id="${queue.id}" class="flex text-lg p-3">
-                            <div class="w-1/3">${queue.token}</div>
-                            <div class="w-1/3">${queue.floor}</div>
-                            <div class="w-1/3">${queue.room}</div>
-                        </div>
-                    `);
-
                     if (queue.status === 1) {
                         calledTokens.push(queue.token);
+                        insertNewRowInQueue(queue);
                         textToSpeech('Token number, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room.split('').join(', '));
                     } else if (queue.status === 2) {
                         recalledTokens[queue.token] = queue.recall_count;
+                        insertNewRowInQueue(queue);
                         textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room.split('').join(', '));
+                    } else {
+                        insertUpcomingRowInQueue(queue);
                     }
                 } catch (e) {
                     console.log(e);
@@ -131,6 +127,8 @@ const startMonitor = () => {
                     insertNewRowInQueue(token);
 
                     textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
+
+                    roleColumnsElement.find(`[data-id="${token.id}"]`).remove();
                 }
             })
         }
@@ -140,6 +138,10 @@ const startMonitor = () => {
                     recalledTokens[token.token] = token.recall_count;
 
                     textToSpeech('Recalling, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
+
+                    highlightRecall(token.id);
+
+                    roleColumnsElement.find(`[data-id="${token.id}"]`).remove();
                 }
             })
         }
@@ -167,11 +169,35 @@ const textToSpeech = speak => {
 }
 
 const insertNewRowInQueue = (token) => {
-    queueElement.prepend(`
-        <div data-id="${token.id}" class="flex text-lg p-3">
-            <div class="w-1/3">${token.token}</div>
-            <div class="w-1/3">${token.floor}</div>
-            <div class="w-1/3">${token.room}</div>
+    const row = $(`<div data-id="${token.id}" class="flex text-3xl font-bold p-3 m-1 bg-emerald-400 new-in-queue"></div>`);
+    
+    row.append(`
+        <div class="w-1/3">${token.token}</div>
+        <div class="w-1/3">${token.floor}</div>
+        <div class="w-1/3">${token.room}</div>
+    `);
+
+    queueElement.prepend(row);
+
+    setTimeout(() => {
+        row.removeClass('new-in-queue');
+    }, 4000);
+}
+
+const insertUpcomingRowInQueue = (queue) => {
+    $(`#role-column-${queue.role_id}`).append(`
+        <div data-id="${queue.id}" class="flex text-lg p-3 m-1 bg-emerald-400">
+            <div class="w-1/3">${queue.token}</div>
+            <div class="w-1/3">${queue.floor}</div>
+            <div class="w-1/3">${queue.room}</div>
         </div>
     `);
+}
+
+const highlightRecall = id => {
+    const row = $(`[data-id="${id}"]`).addClass('new-in-queue');
+    
+    setTimeout(() => {
+        row.removeClass('new-in-queue');
+    }, 4000);
 }

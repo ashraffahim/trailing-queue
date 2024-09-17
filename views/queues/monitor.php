@@ -10,10 +10,10 @@ MonitorAsset::register($this);
 <div class="queues-monitor">
     <div class="flex flex-row w-full">
         <div id="queue-container" class="w-1/2">
-            <div id="queue" class="flex flex-col flex-auto min-h-screen border border-slate-400"></div>
+            <div id="queue" class="flex flex-col flex-auto min-h-screen border border-emerald-100"></div>
         </div>
         <div class="flex flex-col w-1/2">
-            <div id="ads" class="w-full"></div>
+            <div id="ads" class="w-full h-[50vh]"></div>
             <div id="role-columns" class="flex flex-row w-full"></div>
         </div>
     </div>
