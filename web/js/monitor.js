@@ -128,6 +128,8 @@ const startMonitor = () => {
                 if (!calledTokens.includes(token.token)) {
                     calledTokens.push(token.token);
 
+                    insertNewRowInQueue(token);
+
                     textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
                 }
             })
@@ -162,4 +164,14 @@ const textToSpeech = speak => {
     msg.text = speak;
     msg.lang = 'en-US';
     window.speechSynthesis.speak(msg);
+}
+
+const insertNewRowInQueue = (token) => {
+    queueElement.prepend(`
+        <div data-id="${token.id}" class="flex text-lg p-3">
+            <div class="w-1/3">${token.token}</div>
+            <div class="w-1/3">${token.floor}</div>
+            <div class="w-1/3">${token.room}</div>
+        </div>
+    `);
 }
