@@ -52,7 +52,7 @@ $this->title = 'Login';
                             Password
                         </label>
                         <div class="text-sm">
-                            <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500" tabindex="-1">
+                            <a href="#" class="font-semibold text-emerald-400 hover:text-emerald-300" tabindex="-1">
                                 Forgot password?
                             </a>
                         </div>
@@ -69,14 +69,14 @@ $this->title = 'Login';
                 <div>
                     <button
                         type="submit"
-                        class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border-0">
+                        class="flex w-full justify-center rounded-md bg-emerald-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 border-0">
                         Sign in
                     </button>
                 </div>
 
                 <p class="text-center text-sm text-gray-500">
                     Not a member?
-                    <a href="/register" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Start a 14 day free trial</a>
+                    <a href="/register" class="font-semibold leading-6 text-emerald-400 hover:text-emerald-300">Start a 14 day free trial</a>
                 </p>
 
                 <?php ActiveForm::end(); ?>

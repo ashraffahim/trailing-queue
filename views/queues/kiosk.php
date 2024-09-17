@@ -12,16 +12,19 @@ $this->params['breadcrumbs'][] = $this->title;
 KioskAsset::register($this);
 ?>
 <div class="queues-kiosk">
-    <div class="flex flex-col justify-center items-center gap-y-3 py-3" id="role-list">
-        <div class="flex flex-col justify-center items-center mb-6">
+    <div class="flex flex-col justify-center items-center py-3">
+        <div class="flex flex-col justify-center items-center">
             <img src="/images/bangladesh-embassy.jpg" alt="Bangladesh Embassy" class="h-36">
+        </div>
+        <div id="role-list" class="flex flex-col justify-center items-center w-full gap-y-3 py-3"></div>
+        <div class="flex flex-col justify-center items-center mb-6">
             <div class="my-3 text-xs uppercase text-slate-400 ">Sponsored by</div>
-            <div class="flex gap-x-3">
+            <div class="flex gap-x-6">
                 <div class="w-1/2">
-                    <img src="/images/amaar-clinic-logo.png" alt="Amaar Clinic" class="h-10 grayscale">
+                    <img src="/images/amaar-clinic-logo.png" alt="Amaar Clinic" class="h-16">
                 </div>
                 <div class="w-1/2">
-                    <img src="/images/amc-logo.png" alt="Aser Al Madina" class="h-10 grayscale">
+                    <img src="/images/amc-logo.png" alt="Aser Al Madina" class="h-16">
                 </div>
             </div>
         </div>

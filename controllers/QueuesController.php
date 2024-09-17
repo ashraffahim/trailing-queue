@@ -48,9 +48,11 @@ class QueuesController extends _MainController
         if (is_null($role)) throw new NotFoundHttpException('Unknown service');
 
         /** @var \app\models\databaseObjects\User[] $users */
-        $users = $role->getUsers()->andWhere(['is_open' => true])->all();
+        $users = $role->getUsers()
+        // ->andWhere(['is_open' => true])
+        ->all();
 
-        if (empty($users)) throw new NotFoundHttpException('All counters closed');
+        if (empty($users)) throw new NotFoundHttpException('No servers appointed');
 
         $userIds = array_map(function ($user) {
             return $user->id;
@@ -64,19 +66,31 @@ class QueuesController extends _MainController
             ->limit(1)
             ->one();
 
-        if (is_null($userTokenCount->id)) throw new NotFoundHttpException('All counters closed');
-
         $responseData = [];
 
         $transaction = \Yii::$app->db->beginTransaction();
 
         try {
 
+            if (is_null($userTokenCount->id)) {
+                foreach ($userIds as $userId) {
+                    $newUserTokenCount = new UserTokenCount();
+                    $newUserTokenCount->user_id = $userId;
+                    $newUserTokenCount->count = 0;
+                    $newUserTokenCount->served = 0;
+                    $newUserTokenCount->date = date('Y-m-d');
+
+                    if (!$newUserTokenCount->save()) throw new CannotSaveException($newUserTokenCount, 'Failed');
+                }
+
+                $userTokenCount = $newUserTokenCount;
+            }
+
             $assignedUser = $users[array_search($userTokenCount->user_id, $userIds)];
 
             $userTokenCount->count += 1;
 
-            if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'Operation failed');
+            if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'Failed');
 
             $queue = new Queue();
             $queue->token = QueueManager::createToken($role->token_prefix, $userTokenCount->count);
@@ -85,7 +99,7 @@ class QueuesController extends _MainController
             $queue->time = date('h:i:s');
             $queue->status = QueueManager::STATUS_CREATED;
 
-            if (!$queue->save()) throw new CannotSaveException($queue, 'Operation failed');
+            if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
 
             $responseData['token'] = $queue->token;
             $responseData['floor'] = $assignedUser->floor;
@@ -260,7 +274,7 @@ class QueuesController extends _MainController
 
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
-        $currentUserId = \Yii::$app->user->identity->id;
+        $currentUserId = (int) \Yii::$app->user->identity->id;
 
         $currentQueue = Queue::findOne([
             'user_id' => $currentUserId,
@@ -441,7 +455,10 @@ class QueuesController extends _MainController
                     ['in', 'user_id', $userIds],
                     ['>=', 'id', $firstLoadedId],
                     ['=', 'date', date('Y-m-d')],
-                    ['in', 'status', [
+                    [
+                        'in',
+                        'status',
+                        [
                             QueueManager::STATUS_CALLED,
                             QueueManager::STATUS_RECALLED,
                             QueueManager::STATUS_ENDED,
@@ -449,7 +466,7 @@ class QueuesController extends _MainController
                     ]
                 ])
                 ->all();
-            
+
             foreach ($updatedTokens as $updatedToken) {
                 switch ($updatedToken->status) {
                     case QueueManager::STATUS_CALLED:

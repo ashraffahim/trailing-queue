@@ -68,7 +68,7 @@ $this->title = 'Register';
                 <div>
                     <button
                         type="submit"
-                        class="flex mt-6 w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 border-0">
+                        class="flex mt-6 w-full justify-center rounded-md bg-emerald-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 border-0">
                         Register
                     </button>
                 </div>
@@ -76,7 +76,7 @@ $this->title = 'Register';
                 <div>
                     <p class="text-center text-sm text-gray-500">
                         Already a member?
-                        <a href="/login" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Login</a>
+                        <a href="/login" class="font-semibold leading-6 text-emerald-400 hover:text-emerald-300">Login</a>
                     </p>
                 </div>
             </form>
