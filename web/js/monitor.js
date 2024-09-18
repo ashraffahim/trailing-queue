@@ -39,7 +39,7 @@ queues.forEach((num, index) => {
 });
 
 queueContainerElement.prepend(`
-    <div class="flex p-3 bg-emerald-400">
+    <div class="flex p-3 text-white" style="background-color: #069;">
         <div class="text-4xl w-1/3">Token</div>
         <div class="text-4xl w-1/3">Floor</div>
         <div class="text-4xl w-1/3">Count/Room</div>
@@ -76,7 +76,7 @@ startButtonElement.on('click', () => {
     queues.forEach(role => {
         roleColumnsElement.append(`
             <div id="role-column-${role}" class="flex flex-col flex-auto min-h-screen border border-emerald-100">
-                <div class="role-column-header flex p-3 bg-emerald-400">
+                <div class="role-column-header flex p-3 text-white" style="background-color: #069;">
                     <div class="text-lg w-1/3">Token</div>
                     <div class="text-lg w-1/3">Floor</div>
                     <div class="text-lg w-1/3">Room</div>
@@ -133,11 +133,11 @@ const startMonitor = () => {
             queue.forEach(queue => {
                 try {
                     if (queue.status === 1) {
-                        calledTokens.push(queue.token);
+                        calledTokens.push(queue.id);
                         insertNewRowInQueue(queue);
                         textToSpeech('Token number, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room.split('').join(', '));
                     } else if (queue.status === 2) {
-                        recalledTokens[queue.token] = queue.recall_count;
+                        recalledTokens[queue.id] = queue.recall_count;
                         insertNewRowInQueue(queue);
                         textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room.split('').join(', '));
                     } else {
@@ -153,7 +153,7 @@ const startMonitor = () => {
             called.forEach(token => {
                 if (!calledTokens.includes(token.id)) {
                     calledTokens.push(token.id);
-                    
+
                     insertNewRowInQueue(token);
 
                     textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
@@ -247,7 +247,7 @@ const textToSpeech = speak => {
 }
 
 const insertNewRowInQueue = (token) => {
-    const row = $(`<div data-id="${token.id}" class="flex text-3xl font-bold p-3 m-1 bg-emerald-400 new-in-queue"></div>`);
+    const row = $(`<div data-id="${token.id}" class="text-3xl font-bold row-in-queue new-row-in-queue"></div>`);
     
     row.append(`
         <div class="w-1/3">${token.token}</div>
@@ -258,13 +258,13 @@ const insertNewRowInQueue = (token) => {
     queueElement.prepend(row);
 
     setTimeout(() => {
-        row.removeClass('new-in-queue');
+        row.removeClass('new-row-in-queue');
     }, 4000);
 }
 
 const insertUpcomingRowInQueue = (queue) => {
     $(`#role-column-${queue.role_id}`).append(`
-        <div data-id="${queue.id}" class="flex text-lg p-3 m-1 bg-emerald-400">
+        <div data-id="${queue.id}" class="text-lg row-in-queue">
             <div class="w-1/3">${queue.token}</div>
             <div class="w-1/3">${queue.floor}</div>
             <div class="w-1/3">${queue.room}</div>
@@ -273,9 +273,9 @@ const insertUpcomingRowInQueue = (queue) => {
 }
 
 const highlightRecall = id => {
-    const row = $(`[data-id="${id}"]`).addClass('new-in-queue');
+    const row = $(`[data-id="${id}"]`).addClass('new-row-in-queue');
     
     setTimeout(() => {
-        row.removeClass('new-in-queue');
+        row.removeClass('new-row-in-queue');
     }, 4000);
 }

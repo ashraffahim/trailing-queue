@@ -435,6 +435,8 @@ class QueuesController extends _MainController
 
     public function actionMonitorSocket($ids, $lastLoadedId, $firstLoadedId)
     {
+        \Yii::$app->log->targets[0]->enabled = false;
+        
         $this->response->format = Response::FORMAT_JSON;
 
         $idArray = explode(',', $ids);

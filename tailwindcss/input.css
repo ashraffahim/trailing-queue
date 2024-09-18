@@ -320,27 +320,35 @@
         @apply bg-gray-200
     }
 
-    .new-in-queue {
-        animation: pulse 1s infinite;
-        -webkit-animation: pulse 1s infinite;
-        -moz-animation: pulse 1s infinite;
-        -o-animation: pulse 1s infinite;
+    .row-in-queue {
+        background-image: linear-gradient(to right, #069, lightblue, #069);
+        background-size: 100%;
+        background-position: 0 0;
+        transform: translateX(0%);
+        @apply p-3 m-1 flex text-white
     }
-
-    @keyframes pulse {
+    
+    .new-row-in-queue {
+        animation: pulse 4s;
+        -webkit-animation: pulse 4s;
+        -moz-animation: pulse 4s;
+        -o-animation: pulse 4s;
+    }
+    
+    @keyframes pulse 
+    {
         0% {
-            transform: scale(1);
-            @apply bg-emerald-200
+            transform: translateX(-100%);
+            background-position: 0 0;
         }
 
-        50% {
-            transform: scale(1.05);
-            @apply bg-emerald-50
+        10% {
+            transform: translateX(0%);
+            background-position: 0 0;
         }
-
+        
         100% {
-            transform: scale(1);
-            @apply bg-emerald-200
+            background-position: 195vw 0;
         }
     }
 }

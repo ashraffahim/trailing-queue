@@ -1257,30 +1257,39 @@ input[type="number"]::-webkit-outer-spin-button,
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
-.new-in-queue {
-  animation: pulse 1s infinite;
-  -webkit-animation: pulse 1s infinite;
-  -moz-animation: pulse 1s infinite;
-  -o-animation: pulse 1s infinite;
+.row-in-queue {
+  background-image: linear-gradient(to right, #069, lightblue, #069);
+  background-size: 100%;
+  background-position: 0 0;
+  transform: translateX(0%);
+  margin: 0.25rem;
+  display: flex;
+  padding: 0.75rem;
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity))
 }
 
-@keyframes pulse {
+.new-row-in-queue {
+  animation: pulse 4s;
+  -webkit-animation: pulse 4s;
+  -moz-animation: pulse 4s;
+  -o-animation: pulse 4s;
+}
+
+@keyframes pulse 
+    {
   0% {
-    transform: scale(1);
-    --tw-bg-opacity: 1;
-    background-color: rgb(167 243 208 / var(--tw-bg-opacity))
+    transform: translateX(-100%);
+    background-position: 0 0;
   }
 
-  50% {
-    transform: scale(1.05);
-    --tw-bg-opacity: 1;
-    background-color: rgb(236 253 245 / var(--tw-bg-opacity))
+  10% {
+    transform: translateX(0%);
+    background-position: 0 0;
   }
 
   100% {
-    transform: scale(1);
-    --tw-bg-opacity: 1;
-    background-color: rgb(167 243 208 / var(--tw-bg-opacity))
+    background-position: 195vw 0;
   }
 }
 
@@ -1302,10 +1311,6 @@ input[type="number"]::-webkit-outer-spin-button,
 
 .m-0 {
   margin: 0px;
-}
-
-.m-1 {
-  margin: 0.25rem;
 }
 
 .m-5 {
@@ -1572,6 +1577,10 @@ input[type="number"]::-webkit-outer-spin-button,
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
 }
@@ -1684,6 +1693,26 @@ input[type="number"]::-webkit-outer-spin-button,
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.bg-indigo-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(67 56 202 / var(--tw-bg-opacity));
+}
+
+.bg-blue-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
+
+.bg-teal-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(20 184 166 / var(--tw-bg-opacity));
+}
+
+.bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
 .object-contain {
