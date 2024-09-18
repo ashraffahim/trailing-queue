@@ -46,6 +46,15 @@ queueContainerElement.prepend(`
     </div>
 `);
 
+// Bangladesh embassy logo in first slide
+const embassySlideLogoImageElement = new Image();
+embassySlideLogoImageElement.src = '/images/bangladesh-embassy-dubai.jpg';
+embassySlideLogoImageElement.style.maxWidth = '100%';
+embassySlideLogoImageElement.style.maxHeight = '100%';
+
+adElements.push(embassySlideLogoImageElement);
+adsElement.append(embassySlideLogoImageElement);
+
 window.ads.forEach(ad => {
     const adNameParts = ad.split('.');
     const adExt = adNameParts[adNameParts.length - 1].toLowerCase();
