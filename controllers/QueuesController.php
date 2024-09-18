@@ -347,7 +347,7 @@ class QueuesController extends _MainController
 
             $userTokenCount->count += 1;
 
-            if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'failed');
+            if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'Failed');
 
             $newQueue = new Queue();
             $newQueue->token = $token;
@@ -357,7 +357,7 @@ class QueuesController extends _MainController
             $newQueue->trail_id = $currentUserId;
             $newQueue->status = QueueManager::STATUS_CREATED;
 
-            if (!$newQueue->save()) throw new CannotSaveException($newQueue, 'failed');
+            if (!$newQueue->save()) throw new CannotSaveException($newQueue, 'Failed');
 
             $transaction->commit();
         } catch (\Exception $e) {

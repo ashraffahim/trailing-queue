@@ -2,6 +2,7 @@ let queues = [null, null, null];
 let lastLoadedId = 0;
 let firstLoadedId = 0;
 let calledTokens = [];
+let endedTokens = [];
 let recalledTokens = {};
 let adElements = [];
 
@@ -150,9 +151,9 @@ const startMonitor = () => {
 
         if (called.length > 0) {
             called.forEach(token => {
-                if (!calledTokens.includes(token.token)) {
-                    calledTokens.push(token.token);
-
+                if (!calledTokens.includes(token.id)) {
+                    calledTokens.push(token.id);
+                    
                     insertNewRowInQueue(token);
 
                     textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
@@ -163,8 +164,8 @@ const startMonitor = () => {
         }
         if (recalled.length > 0) {
             recalled.forEach(token => {
-                if (!recalledTokens.hasOwnProperty(token.token) || recalledTokens[token.token] < token.recall_count) {
-                    recalledTokens[token.token] = token.recall_count;
+                if (!recalledTokens.hasOwnProperty(token.id) || recalledTokens[token.id] < token.recall_count) {
+                    recalledTokens[token.id] = token.recall_count;
 
                     textToSpeech('Recalling, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
 
@@ -176,7 +177,10 @@ const startMonitor = () => {
         }
         if (ended.length > 0) {
             ended.forEach(ending => {
-                $(`[data-id="${ending.id}"]`).remove();
+                if (!endedTokens.includes(ending.id)) {
+                    endedTokens.push(ending.id);
+                    $(`[data-id="${ending.id}"]`).remove();
+                }
             })
         }
 
