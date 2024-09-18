@@ -4,6 +4,7 @@
 /** @var array $files */
 
 use app\assets\AdsAsset;
+use app\components\Util;
 use yii\helpers\Html;
 
 $this->title = 'Ads';
@@ -39,7 +40,7 @@ AdsAsset::register($this);
                         <tr>
                             <td><?= $index ?></td>
                             <td><?= basename($file) ?></td>
-                            <td><?= filesize($file); ?></td>
+                            <td><?= Util::prettyFileSize(filesize($file)) ?></td>
                             <td><?= Html::a('Delete', ['delete', 'name' => basename($file)], [
                                     'class' => 'btn-danger-muted mt-0',
                                     'data' => [

@@ -66,6 +66,19 @@ class Util {
         return Yii::$app->request->headers->get('X-Requested-With') === 'fetch';
     }
 
+    public static function prettyFileSize(int $bytes): string {
+        $suffix = ['GB', 'MB', 'K', 'B'];
+        $iteration = 3;
+        $size = $bytes;
+
+        while ($size > 1024 && $iteration > 0) {
+            $size = ($size / 1024);
+            $iteration--;
+        }
+
+        return number_format($size, 2) . $suffix[$iteration];
+    }
+
 }
 
 ?>
