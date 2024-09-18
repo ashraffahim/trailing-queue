@@ -83,7 +83,7 @@ class QueuesController extends _MainController
 
                 $userTokenCount = $newUserTokenCount;
             } else $userTokenCount = $allUserTokenCount[0];
-            
+
             $roleTokenCount = 1;
 
             foreach ($allUserTokenCount as $summingUserTokenCount) {
@@ -166,7 +166,7 @@ class QueuesController extends _MainController
             $rolesArray[] = ['id' => $role->id, 'name' => $role->name];
         }
 
-        $this->layout = 'blank-dark';
+        $this->layout = 'blank-blue-gradient';
         return $this->render('call', [
             'openCloseText' => \Yii::$app->user->identity->is_open ? 'Close' : 'Open',
             'forwardRoles' => $rolesArray
@@ -333,7 +333,7 @@ class QueuesController extends _MainController
 
                 $userTokenCount = $newUserTokenCount;
             } else $userTokenCount = $allUserTokenCount[0];
-            
+
             $roleTokenCount = 1;
 
             foreach ($allUserTokenCount as $summingUserTokenCount) {
@@ -404,6 +404,27 @@ class QueuesController extends _MainController
         return $user->is_open ? 'Close' : 'Open';
     }
 
+    public function actionNewTokenInQueue()
+    {
+        \Yii::$app->log->targets[0]->enabled = false;
+
+        if (!Util::isFetchRequest()) throw new NotFoundHttpException();
+
+        $userTokenCount = UserTokenCount::find()
+            ->where([
+                'and',
+                ['=', 'user_id', \Yii::$app->user->identity->id],
+                ['=', 'date', date('Y-m-d')],
+                ['>', '(`count` - `served`)', 0]
+            ])->one();
+
+        $this->response->format = Response::FORMAT_RAW;
+
+        if (!is_null($userTokenCount)) return true;
+
+        return false;
+    }
+
     public function actionMonitor()
     {
         /** @var Role[] $roles */
@@ -426,7 +447,7 @@ class QueuesController extends _MainController
             $adsArray[] = '/data/ads/' . basename($ad);
         }
 
-        $this->layout = 'blank-dark';
+        $this->layout = 'blank-blue-gradient';
         return $this->render('monitor', [
             'roles' => $roleArray,
             'ads' => $adsArray
@@ -436,7 +457,7 @@ class QueuesController extends _MainController
     public function actionMonitorSocket($ids, $lastLoadedId, $firstLoadedId)
     {
         \Yii::$app->log->targets[0]->enabled = false;
-        
+
         $this->response->format = Response::FORMAT_JSON;
 
         $idArray = explode(',', $ids);

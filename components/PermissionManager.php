@@ -61,6 +61,7 @@ class PermissionManager {
             'forward' => self::PRIVILEGE_QUEUES_CALL,
             'call-token' => self::PRIVILEGE_QUEUES_CALL,
             'open-close' => self::PRIVILEGE_QUEUES_CALL,
+            'new-token-in-queue' => self::PRIVILEGE_QUEUES_CALL,
             'monitor' => self::PRIVILEGE_QUEUES_MONITOR,
             'monitor-socket' => self::PRIVILEGE_QUEUES_MONITOR,
         ],

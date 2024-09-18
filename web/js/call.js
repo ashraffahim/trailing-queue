@@ -4,6 +4,7 @@ const fetchUrl = {
     openClose: '/queues/open-close',
     callNext: '/queues/call-next',
     recall: '/queues/recall',
+    newTokenInQueue: '/queues/new-token-in-queue',
 };
 
 let currentToken = null;
@@ -19,16 +20,19 @@ const currentTokenElement = $('#current-token');
 const forwardModalElement = $('#forward-modal');
 const forwardModalBackdropElement = $('#forward-modal-backdrop');
 
-$(document).ready(async function() {
+const newTokenAlertAudioElement = new Audio('/audio/cartoon_notifier_prompt_message.mp3');
+newTokenAlertAudioElement.loop = true;
+
+$(document).ready(async function () {
     if (currentToken === null) {
         const headers = new Headers();
         headers.append('X-Requested-With', 'fetch');
-    
+
         const response = await fetch(fetchUrl.currentToken, {
             headers,
             method: 'get',
         });
-    
+
         if (!response.ok) {
             window.alert('Failed');
             return;
@@ -36,13 +40,16 @@ $(document).ready(async function() {
 
         if (response.status === 204) {
             currentTokenElement.text('Empty');
+            
+            checkForNewTokenInQueue();
+
             return;
         }
-        
+
         const responseData = await response.json();
 
         currentToken = responseData.token;
-    
+
         currentTokenElement.text(responseData.token);
     }
 });
@@ -81,6 +88,13 @@ window.forwardRoles.forEach(role => {
 
 });
 
+currentTokenElement.on('click', () => {
+    if (!newTokenAlertAudioElement.paused) {
+        newTokenAlertAudioElement.pause();
+        currentTokenElement.text('NEW');
+    }
+});
+
 nextTokenButtonElement.on('click', async () => {
     const headers = new Headers();
     headers.append('X-Requested-With', 'fetch');
@@ -97,10 +111,13 @@ nextTokenButtonElement.on('click', async () => {
 
     if (response.status === 204) {
         currentTokenElement.text('Empty');
+        checkForNewTokenInQueue(true);
         return;
     }
 
     const responseData = await response.json();
+
+    newTokenAlertAudioElement.pause();
 
     currentToken = responseData.token;
 
@@ -151,3 +168,33 @@ recallButtonElement.on('click', async () => {
         window.alert('Failed');
     }
 });
+
+const checkForNewTokenInQueue = (playAlertAudio) => {
+    let interval = setInterval(async () => {
+        const headers = new Headers();
+        headers.append('X-Requested-With', 'fetch');
+
+        const response = await fetch(fetchUrl.newTokenInQueue, {
+            headers,
+            method: 'get',
+        });
+
+        if (!response.ok) {
+            window.alert('Failed');
+        }
+
+        const responseData = await response.text();
+
+        if (responseData === '1') {
+            clearInterval(interval);
+
+            
+            if (playAlertAudio) {
+                currentTokenElement.html('<div class="text-center">NEW<div class="text-sm mt-1">Click to mute</div></div>');
+                newTokenAlertAudioElement.play();
+            } else {
+                currentTokenElement.text('NEW');
+            }
+        }
+    }, 1000);
+}
