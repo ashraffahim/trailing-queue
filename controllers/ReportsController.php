@@ -19,18 +19,11 @@ class ReportsController extends _MainController
     }
 
     public function actionQueue() {
-        $oneMonthBack = (new DateTime())->modify('-1 month')->format('Y-m-d');
-        
-        $from = $this->request->get('from', $oneMonthBack);
-        $to = $this->request->get('to', date('Y-m-d'));
+        $date = $this->request->get('date', date('Y-m-d'));
         $token = $this->request->get('token', '');
 
         $queue = Queue::find()
-        ->where([
-            'and',
-            ['>=', 'date', $from],
-            ['<=', 'date', $to]
-        ]);
+        ->where(['date' => $date]);
         
         if ($token !== '') {
             $queue->andWhere(['token' => $token]);
@@ -52,19 +45,25 @@ class ReportsController extends _MainController
 
         return $this->render('queue', [
             'queue' => $dataProvider,
-            'from' => $from,
-            'to' => $to,
+            'date' => $date,
             'token' => $token,
         ]);
     }
 
     public function actionSummary() {        
-        $date = $this->request->get('date', date('Y-m-d'));
+        $oneMonthBack = (new DateTime())->modify('-1 month')->format('Y-m-d');
+        
+        $from = $this->request->get('from', $oneMonthBack);
+        $to = $this->request->get('to', date('Y-m-d'));
 
         $queue = UserTokenCount::find()
         ->select(['utc.*'])
         ->alias('utc')
-        ->where(['date' => $date])
+        ->where([
+            'and',
+            ['>=', 'date', $from],
+            ['<=', 'date', $to]
+        ])
         ->leftJoin(User::tableName() . ' AS `u`', '`utc`.`user_id` = `u`.`id`');
         
         $dataProvider = new ActiveDataProvider([
@@ -83,7 +82,8 @@ class ReportsController extends _MainController
 
         return $this->render('summary', [
             'queue' => $dataProvider,
-            'date' => $date
+            'from' => $from,
+            'to' => $to
         ]);
     }
 }

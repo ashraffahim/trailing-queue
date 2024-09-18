@@ -7,8 +7,7 @@ use yii\grid\GridView;
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $queue */
-/** @var string $from */
-/** @var string $to */
+/** @var string $date */
 /** @var string $token */
 
 $this->title = 'Queue';
@@ -24,12 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <form>
             <div class="flex items-end gap-x-2 my-6">
                 <div class="form-group">
-                    <label for="from" class="input-label-classic">From</label>
-                    <input type="date" name="from" id="from" class="input-classic" value="<?= $from ?>">
-                </div>
-                <div class="form-group">
-                    <label for="to" class="input-label-classic">To</label>
-                    <input type="date" name="to" id="to" class="input-classic" value="<?= $to ?>">
+                    <label for="date" class="input-label-classic">Date</label>
+                    <input type="date" name="date" id="date" class="input-classic" value="<?= $date ?>">
                 </div>
                 <div class="form-group">
                     <label for="token" class="input-label-classic">Token</label>

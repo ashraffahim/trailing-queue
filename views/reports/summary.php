@@ -1,14 +1,13 @@
 <?php
 
-use app\models\databaseObjects\Queue;
-use app\models\databaseObjects\User;
 use app\models\databaseObjects\UserTokenCount;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
 /** @var yii\data\ActiveDataProvider $queue */
-/** @var string $date */
+/** @var string $from */
+/** @var string $to */
 
 $this->title = 'Summary';
 $this->params['breadcrumbs'][] = ['label' => 'Report', 'url' => ['index']];
@@ -23,8 +22,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <form>
             <div class="flex items-end gap-x-2 my-6">
                 <div class="form-group">
-                    <label for="date" class="input-label-classic">Date</label>
-                    <input type="date" name="date" id="date" class="input-classic" value="<?= $date ?>">
+                    <label for="from" class="input-label-classic">From</label>
+                    <input type="date" name="from" id="from" class="input-classic" value="<?= $from ?>">
+                </div>
+                <div class="form-group">
+                    <label for="to" class="input-label-classic">To</label>
+                    <input type="date" name="to" id="to" class="input-classic" value="<?= $to ?>">
                 </div>
                 <div class="form-group">
                     <button class="btn-classic">Filter</button>
