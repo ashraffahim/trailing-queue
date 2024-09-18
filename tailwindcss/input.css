@@ -344,3 +344,9 @@
         }
     }
 }
+
+@layer utilities {
+    .bg-blue-gradient {
+        background-image: radial-gradient(farthest-side ellipse at 10% 0, #154265 20%, #7392c2);
+    }
+}

@@ -22,7 +22,15 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
+            'enableSession' => true,
+            'authTimeout' => 30,
             'enableAutoLogin' => false,
+        ],
+        'session' => [
+            'class' => 'yii\web\Session',
+            'cookieParams' => ['httponly' => true, 'lifetime' => 3600 * 24 * 30],
+            'timeout' => 3600*24*30,
+            'useCookies' => true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

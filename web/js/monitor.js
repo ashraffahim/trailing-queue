@@ -41,7 +41,7 @@ queueContainerElement.prepend(`
     <div class="flex p-3 bg-emerald-400">
         <div class="text-4xl w-1/3">Token</div>
         <div class="text-4xl w-1/3">Floor</div>
-        <div class="text-4xl w-1/3">Room</div>
+        <div class="text-4xl w-1/3">Count/Room</div>
     </div>
 `);
 
@@ -188,7 +188,7 @@ const startAdsSlide = () => {
     let interval = null;
     let slideIndex = 0;
 
-    const slideDelay = 1000;
+    const slideDelay = 5000;
 
     const slideProcess = () => {
         let prevSlideIndex = 0;
