@@ -23,13 +23,13 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableSession' => true,
-            'authTimeout' => 30,
+            'authTimeout' => 2592000,
             'enableAutoLogin' => false,
         ],
         'session' => [
             'class' => 'yii\web\Session',
-            'cookieParams' => ['httponly' => true, 'lifetime' => 3600 * 24 * 30],
-            'timeout' => 3600*24*30,
+            'cookieParams' => ['httponly' => true, 'lifetime' => 2592000],
+            'timeout' => 2592000,
             'useCookies' => true,
         ],
         'errorHandler' => [
