@@ -82,9 +82,8 @@ class QueuesController extends _MainController
                 }
 
                 $userTokenCount = $newUserTokenCount;
-            }
+            } else $userTokenCount = $allUserTokenCount[0];
             
-            $userTokenCount = $allUserTokenCount[0];
             $roleTokenCount = 1;
 
             foreach ($allUserTokenCount as $summingUserTokenCount) {
@@ -219,7 +218,7 @@ class QueuesController extends _MainController
             ->where(['user_id' => $user->id, 'date' => date('Y-m-d')])
             ->one();
 
-        if (is_null($userTokenCount)) throw new ForbiddenHttpException('Counter closed');
+        if (is_null($userTokenCount)) throw new ForbiddenHttpException('Queue empty');
 
         $transaction = \Yii::$app->db->beginTransaction();
 
@@ -301,7 +300,8 @@ class QueuesController extends _MainController
         if (is_null($role)) throw new NotFoundHttpException('Unknown service');
 
         /** @var \app\models\databaseObjects\User[] $users */
-        $users = $role->getUsers()->andWhere(['is_open' => true])->all();
+        $users = $role->users;
+        // ->andWhere(['is_open' => true])
 
         if (empty($users)) throw new NotFoundHttpException('All counters closed');
 
@@ -309,19 +309,37 @@ class QueuesController extends _MainController
             return $user->id;
         }, $users);
 
-        /** @var UserTokenCount $userTokenCount */
-        $userTokenCount = UserTokenCount::find()
+        /** @var UserTokenCount $allUserTokenCount */
+        $allUserTokenCount = UserTokenCount::find()
             ->where(['user_id' => $userIds, 'date' => date('Y-m-d')])
-            ->select(['*', 'MIN(`count` - `served`) AS `in_queue`'])
+            ->select(['*', '(`count` - `served`) AS `in_queue`'])
             ->orderBy(['in_queue' => SORT_ASC])
-            ->limit(1)
-            ->one();
-
-        if (is_null($userTokenCount->id)) throw new NotFoundHttpException('All counters closed');
+            ->all();
 
         $transaction = \Yii::$app->db->beginTransaction();
 
         try {
+
+            if (empty($allUserTokenCount)) {
+                foreach ($userIds as $userId) {
+                    $newUserTokenCount = new UserTokenCount();
+                    $newUserTokenCount->user_id = $userId;
+                    $newUserTokenCount->count = 0;
+                    $newUserTokenCount->served = 0;
+                    $newUserTokenCount->date = date('Y-m-d');
+
+                    if (!$newUserTokenCount->save()) throw new CannotSaveException($newUserTokenCount, 'Failed');
+                }
+
+                $userTokenCount = $newUserTokenCount;
+            } else $userTokenCount = $allUserTokenCount[0];
+            
+            $roleTokenCount = 1;
+
+            foreach ($allUserTokenCount as $summingUserTokenCount) {
+                $roleTokenCount += $summingUserTokenCount->count;
+            }
+
             $currentQueue->status = QueueManager::STATUS_ENDED;
             $currentQueue->end_time = date('h:i:s');
 
