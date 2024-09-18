@@ -1306,6 +1306,10 @@ input[type="number"]::-webkit-outer-spin-button,
   inset: 0px;
 }
 
+.inset-10 {
+  inset: 2.5rem;
+}
+
 .m-0 {
   margin: 0px;
 }
@@ -1470,6 +1474,10 @@ input[type="number"]::-webkit-outer-spin-button,
   max-width: 72rem;
 }
 
+.max-w-full {
+  max-width: 100%;
+}
+
 .max-w-lg {
   max-width: 32rem;
 }
@@ -1610,6 +1618,10 @@ input[type="number"]::-webkit-outer-spin-button,
   border-width: 2px;
 }
 
+.border-4 {
+  border-width: 4px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -1621,6 +1633,11 @@ input[type="number"]::-webkit-outer-spin-button,
 .border-emerald-100 {
   --tw-border-opacity: 1;
   border-color: rgb(209 250 229 / var(--tw-border-opacity));
+}
+
+.border-emerald-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(52 211 153 / var(--tw-border-opacity));
 }
 
 .border-gray-200 {
@@ -1765,6 +1782,11 @@ input[type="number"]::-webkit-outer-spin-button,
 .py-12 {
   padding-top: 3rem;
   padding-bottom: 3rem;
+}
+
+.py-16 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
 .py-2 {

@@ -5,6 +5,7 @@ const fetchUrl = {
 const csrfParam = $('meta[name="csrf-param"]').attr('content');
 const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+const fileDropzoneElement = $('#file-dropzone');
 const fileInputElement = $('#file-input');
 
 fileInputElement.on('change', async () => {
@@ -42,4 +43,18 @@ fileInputElement.on('change', async () => {
     window.location.reload();
 });
 
-$(document).on('drag', () => { });
+$(document).on('drag dragover', () => {
+    fileInputElement.removeClass('absolute');
+    fileInputElement.addClass('fixed');
+
+    fileDropzoneElement.removeClass('relative border-gray-400 text-gray-400 inset-0 border-2');
+    fileDropzoneElement.addClass('fixed border-emerald-400 text-emerald-400 inset-10 border-4 backdrop-blur-md');
+});
+
+$(document).on('dragend drop', () => {
+    fileInputElement.removeClass('fixed');
+    fileInputElement.addClass('absolute');
+
+    fileDropzoneElement.removeClass('fixed border-emerald-400 text-emerald-400 inset-10 border-4 backdrop-blur-md');
+    fileDropzoneElement.addClass('relative border-gray-400 text-gray-400 border-2 inset-0');
+});
