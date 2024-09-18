@@ -18,7 +18,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-screen">
+<html lang="<?= Yii::$app->language ?>" class="h-screen bg-gray-50">
 <head>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>

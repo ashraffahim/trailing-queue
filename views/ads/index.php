@@ -19,7 +19,7 @@ AdsAsset::register($this);
         <input type="file" id="file-input" class="file-collector absolute w-full h-28 inset-0 opacity-0" accept="image/*,video/*" multiple>
     </div>
 
-    <div class="flex max-w-sm mt-6">
+    <div class="flex max-w-xl mt-6">
         <div class="grid-view">
             <table class="table-classic">
                 <thead>
