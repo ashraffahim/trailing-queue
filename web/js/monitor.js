@@ -6,6 +6,11 @@ let endedTokens = [];
 let recalledTokens = {};
 let adElements = [];
 
+const fixedAds = [
+    '/images/bangladesh-embassy-ad.png',
+    '/images/amaar-clinic-ad.png',
+    '/images/amc-ad.png',
+];
 const imageExtentions = ['jpg', 'png', 'jpeg', 'webp', 'gif', 'jfif'];
 const videoExtentions = ['mp4', 'mov', 'wmv', 'avi', 'webm', 'mpeg-2'];
 const fetchUrl = {
@@ -47,13 +52,16 @@ queueContainerElement.prepend(`
 `);
 
 // Bangladesh embassy logo in first slide
-const embassySlideLogoImageElement = new Image();
-embassySlideLogoImageElement.src = '/images/bangladesh-embassy-dubai.jpg';
-embassySlideLogoImageElement.style.maxWidth = '100%';
-embassySlideLogoImageElement.style.maxHeight = '100%';
-
-adElements.push(embassySlideLogoImageElement);
-adsElement.append(embassySlideLogoImageElement);
+fixedAds.forEach((fixedAd, index) => {
+    const embassySlideLogoImageElement = new Image();
+    embassySlideLogoImageElement.src = fixedAd;
+    embassySlideLogoImageElement.style.maxWidth = '100%';
+    embassySlideLogoImageElement.style.maxHeight = '100%';
+    if (index > 0) embassySlideLogoImageElement.classList.add('hidden');
+    
+    adElements.push(embassySlideLogoImageElement);
+    adsElement.append(embassySlideLogoImageElement);
+});
 
 window.ads.forEach(ad => {
     const adNameParts = ad.split('.');

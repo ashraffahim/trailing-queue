@@ -7,7 +7,7 @@ $this->title = 'Bangladesh - Home';
 
 <div class="site-index flex flex-col justify-center items-center min-h-screen w-full">
     <div class="flex flex-col items-center">
-        <img src="/images/bangladesh-embassy.jpg" alt="People's Republic of Bangladesh" class="max-w-60">
+        <img src="/images/bangladesh-embassy-logo.jpg" alt="People's Republic of Bangladesh" class="max-w-60">
         <div class="text-lg font-black text-emerald-600 uppercase">Consulate General of Bangladesh, Dubai</div>
     </div>
     <div class="mt-6 uppercase text-slate-400 ">Sponsored by</div>
