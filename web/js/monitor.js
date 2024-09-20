@@ -236,8 +236,10 @@ const startAdsSlide = () => {
                 adElements[slideIndex].play();
             }
 
-            adElements[slideIndex].onended = () => {
-                interval = setInterval(slideProcess, slideDelay);
+            if (adElements[slideIndex].onended === null) {
+                adElements[slideIndex].onended = () => {
+                    interval = setInterval(slideProcess, slideDelay);
+                }
             }
 
         }
