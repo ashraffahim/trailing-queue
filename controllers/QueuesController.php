@@ -454,15 +454,13 @@ class QueuesController extends _MainController
         ]);
     }
 
-    public function actionMonitorSocket($ids, $lastLoadedId, $firstLoadedId)
+    public function actionMonitorSocket($lastLoadedId, $firstLoadedId)
     {
         \Yii::$app->log->targets[0]->enabled = false;
 
         $this->response->format = Response::FORMAT_JSON;
 
-        $idArray = explode(',', $ids);
-
-        $users = User::findAll(['role_id' => $idArray]);
+        $users = User::find()->all();
 
         $userIds = [];
 

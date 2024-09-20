@@ -127,7 +127,7 @@ const startMonitor = () => {
 
         completedFetch = false;
 
-        const response = await fetch(fetchUrl.monitorSocket + '/' + queues.join(',') + '/' + lastLoadedId + '/' + firstLoadedId, {
+        const response = await fetch(fetchUrl.monitorSocket + '/' + lastLoadedId + '/' + firstLoadedId, {
             headers,
             method: 'get',
         });
