@@ -39,7 +39,7 @@ class RolesController extends _MainController
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Role::find(),
+            'query' => Role::find()->where(['!=', 'task', 0]),
             /*
             'pagination' => [
                 'pageSize' => 50
@@ -135,7 +135,7 @@ class RolesController extends _MainController
      */
     protected function findModel($id)
     {
-        if (($model = Role::findOne(['id' => $id])) !== null) {
+        if (($model = Role::find()->where(['and', ['id' => $id], ['!=', 'task', 0]])->one()) !== null) {
             return $model;
         }
 

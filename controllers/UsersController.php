@@ -40,7 +40,7 @@ class UsersController extends _MainController
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => User::find(),
+            'query' => User::find()->where(['!=', 'role_id', 1]),
             /*
             'pagination' => [
                 'pageSize' => 50
@@ -94,7 +94,7 @@ class UsersController extends _MainController
             $model->loadDefaultValues();
         }
 
-        $roles = Role::find()->all();
+        $roles = Role::find()->where(['!=', 'task', 0])->all();
 
         return $this->render('create', [
             'model' => $model,
@@ -122,7 +122,7 @@ class UsersController extends _MainController
             }
         }
 
-        $roles = Role::find()->all();
+        $roles = Role::find()->where(['!=', 'task', 0])->all();
 
         return $this->render('update', [
             'model' => $model,
@@ -153,7 +153,7 @@ class UsersController extends _MainController
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne(['id' => $id])) !== null) {
+        if (($model = User::find()->where(['and', ['id' => $id], ['!=', 'role_id', 1]])->one()) !== null) {
             return $model;
         }
 

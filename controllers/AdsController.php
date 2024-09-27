@@ -6,7 +6,7 @@ use app\models\forms\AdsUploadForm;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
-class AdsController extends \yii\web\Controller
+class AdsController extends _MainController
 {
     public function actionIndex()
     {

@@ -42,7 +42,7 @@ $this->registerJs('selectClassic()');
             <div class="form-group">
                 <label class="input-label-classic">Role</label>
                 <div class="select-classic close-on-blur sm:max-w-60" id="duration-type" data-name="User[role_id]" tabindex="0">
-                    <div class="select-value"><input type="hidden" name="User[role_id]" value="<?= $model->role_id ?>"></div>
+                    <div class="select-value"><?= !is_null($model->role) ? $model->role->name : '' ?><input type="hidden" name="User[role_id]" value="<?= $model->role_id ?>"></div>
                     <div class="select-options">
                         <a class="select-option" data-value="">&nbsp;</a>
                         <?php foreach ($roles as $role): ?>

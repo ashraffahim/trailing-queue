@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1 class="mt-6"><?= Html::encode($this->title) ?></h1>
 
-    <div class="sm:max-w-2xl">
+    <div>
         <div class="flex justify-end">
             <?= Html::a('Create', ['create'], ['class' => 'btn-classic-muted mt-0 mb-1']) ?>
         </div>
@@ -32,6 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 'first_name',
                 'last_name',
+                [
+                    'label' => 'Role',
+                    'value' => function(User $user) { return $user->role->name; }
+                ],
                 'username',
                 'email:email',
                 [

@@ -22,11 +22,11 @@ class _MainController extends Controller {
      */
     public function beforeAction($action)
     {
-        $this->handleGuestAccess();
+        $this->handleAccess();
         return parent::beforeAction($action);
     }
 
-    public function handleGuestAccess() {
+    public function handleAccess() {
         $controllerName = $this->id;
         $actionName = $this->action->id;    
         
@@ -63,7 +63,7 @@ class _MainController extends Controller {
                     $hasAccess = false;
                 }
             }
-
+            
             if (!$hasAccess) throw new ForbiddenHttpException();
         }
     }

@@ -64,7 +64,7 @@ class ReportsController extends _MainController
             ['>=', 'date', $from],
             ['<=', 'date', $to]
         ])
-        ->leftJoin(User::tableName() . ' AS `u`', '`utc`.`user_id` = `u`.`id`');
+        ->innerJoin(User::tableName() . ' AS `u`', '`utc`.`user_id` = `u`.`id`');
         
         $dataProvider = new ActiveDataProvider([
             'query' => $queue,
