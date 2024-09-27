@@ -62,13 +62,15 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'queues/generate/<id:\d+>' => 'queues/generate',
+                'queues/forward/<rid:\d+>/<token:\w+>' => 'queues/forward',
+                'queues/monitor-socket/<lastLoadedId:\d+>/<firstLoadedId:\d+>' => 'queues/monitor-socket',
+
                 'register' => 'site/register',
                 'login' => 'site/login',
                 'logout' => 'site/logout',
 
-                'queues/generate/<id:\d+>' => 'queues/generate',
-                'queues/forward/<rid:\d+>/<token:\w+>' => 'queues/forward',
-                'queues/monitor-socket/<lastLoadedId:\d+>/<firstLoadedId:\d+>' => 'queues/monitor-socket',
+                'reports/summary/<id:\d+>/<date:\d{4}-\d{2}-\d{2}>' => 'reports/user-summary',
 
                 'users/view/<id:\d+>' => 'users/view',
                 'users/update/<id:\d+>' => 'users/update',
