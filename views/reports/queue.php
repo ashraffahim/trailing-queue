@@ -18,15 +18,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1 class="mt-6"><?= Html::encode($this->title) ?></h1>
 
-    <div class="sm:max-w-4xl">
+    <div>
 
         <form>
             <div class="flex items-end gap-x-2 my-6">
-                <div class="form-group">
+                <div class="form-group max-w-40">
                     <label for="date" class="input-label-classic">Date</label>
                     <input type="date" name="date" id="date" class="input-classic" value="<?= $date ?>">
                 </div>
-                <div class="form-group">
+                <div class="form-group max-w-40">
                     <label for="token" class="input-label-classic">Token</label>
                     <input type="text" name="token" id="token" class="input-classic" value="<?= $token ?>">
                 </div>

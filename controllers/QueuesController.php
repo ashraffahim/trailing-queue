@@ -354,7 +354,7 @@ class QueuesController extends _MainController
             $newQueue->user_id = $userTokenCount->user_id;
             $newQueue->date = date('Y-m-d');
             $newQueue->time = date('h:i:s');
-            $newQueue->trail_id = $currentUserId;
+            $newQueue->trail_id = $currentQueue->id;
             $newQueue->status = QueueManager::STATUS_CREATED;
 
             if (!$newQueue->save()) throw new CannotSaveException($newQueue, 'Failed');
