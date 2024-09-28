@@ -27,17 +27,21 @@ $this->registerJs('selectClassic()');
     <div class="mt-10 sm:w-full sm:max-w-lg">
         <div class="border-b border-gray-900/10 pb-12 space-y-5">
 
-            <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+            <div class="flex gap-x-2 sm:max-w-80">
+                <?= $form->field($model, 'first_name')->textInput(['maxlength' => true, 'class' => 'input-classic']) ?>
+    
+                <?= $form->field($model, 'last_name')->textInput(['maxlength' => true, 'class' => 'input-classic']) ?>
+            </div>
 
-            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+            <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-80']) ?>
 
-            <?= $form->field($model, 'first_name')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-80']) ?>
 
-            <?= $form->field($model, 'last_name')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+            <div class="flex gap-x-2 sm:max-w-80">
+                <?= $form->field($model, 'floor')->textInput(['class' => 'input-classic']) ?>
 
-            <?= $form->field($model, 'floor')->textInput(['class' => 'input-classic sm:max-w-60']) ?>
-
-            <?= $form->field($model, 'room')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+                <?= $form->field($model, 'room')->textInput(['maxlength' => true, 'class' => 'input-classic']) ?>
+            </div>
 
             <div class="form-group">
                 <label class="input-label-classic">Role</label>

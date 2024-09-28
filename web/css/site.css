@@ -2037,16 +2037,16 @@ input[type="number"]::-webkit-outer-spin-button,
     max-width: 42rem;
   }
 
-  .sm\:max-w-36 {
-    max-width: 9rem;
-  }
-
   .sm\:max-w-4xl {
     max-width: 56rem;
   }
 
   .sm\:max-w-60 {
     max-width: 15rem;
+  }
+
+  .sm\:max-w-80 {
+    max-width: 20rem;
   }
 
   .sm\:max-w-lg {
