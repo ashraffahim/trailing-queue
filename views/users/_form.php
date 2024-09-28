@@ -55,7 +55,21 @@ $this->registerJs('selectClassic()');
             <?= $form->field($model, 'is_open')->checkbox(['disabled' => true]) ?>
 
             <?php $model->password_hash = ''; ?>
-            <?= $form->field($model, 'password_hash')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+            
+            <?php if (!is_null($model->id)) : ?>
+                <div class="form-group">
+                    <label class="input-label-classic">
+                        <input type="hidden" name="change_password" value="0">
+                        <input type="checkbox" name="change_password" value="1" id="change-password"> Change password
+                    </label>
+                </div>
+
+                <div id="password-input-container" style="display: none;">
+                    <?= $form->field($model, 'password_hash')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+                </div>
+            <?php else : ?>
+                <?= $form->field($model, 'password_hash')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-60']) ?>
+            <?php endif; ?>
 
         </div>
 
@@ -68,3 +82,18 @@ $this->registerJs('selectClassic()');
     <?php ActiveForm::end(); ?>
 
 </div>
+<script>
+    window.onload = () => {
+        let changedPasswordValue = '';
+        $('#change-password').on('click', function() {
+            if (this.checked) {
+                $('#password-input-container').show();
+                $('#user-password_hash').val(changedPasswordValue);
+            } else {
+                $('#password-input-container').hide();
+                changedPasswordValue = $('#user-password_hash').val();
+                $('#user-password_hash').val('');
+            }
+        });
+    }
+</script>

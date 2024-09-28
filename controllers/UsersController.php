@@ -113,12 +113,20 @@ class UsersController extends _MainController
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
-            
-            $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password_hash);
+        if ($this->request->isPost) {
+            $post = $this->request->post();
 
-            if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            $newPassword = $post['User']['password_hash'];
+            unset($post['User']['password_hash']);
+
+            if ($model->load($post)) {
+                if ($this->request->post('change_password') === '1') {
+                    $model->password_hash = \Yii::$app->security->generatePasswordHash($newPassword);
+                }
+    
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         }
 

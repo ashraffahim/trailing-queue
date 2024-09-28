@@ -36,15 +36,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                     <tr>
                         <th>Avg. wait time</th>
-                        <td><?= $summary['wait_time'] ?></td>
+                        <td><?= $summary['wait_time'] ?> minutes</td>
                     </tr>
                     <tr>
                         <th>Avg. serve time</th>
-                        <td><?= $summary['serve_time'] ?></td>
+                        <td><?= $summary['serve_time'] ?> minutes</td>
                     </tr>
                     <tr>
                         <th>Avg. recall time</th>
-                        <td><?= $summary['recall_time'] ?></td>
+                        <td><?= $summary['recall_time'] ?> minutes</td>
                     </tr>
                     <tr>
                         <th>Avg. recall</th>
