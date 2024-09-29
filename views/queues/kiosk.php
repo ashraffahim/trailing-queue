@@ -14,15 +14,20 @@ KioskAsset::register($this);
 <div class="queues-kiosk">
     <div class="flex flex-col justify-center items-center py-3 min-h-screen">
         <div class="flex flex-col justify-center items-center bg-white sm:max-w-xl w-full rounded-lg">
-            <img src="/images/bangladesh-embassy-logo.jpg" alt="Bangladesh Embassy" class="h-36">
-            <div class="text-lg font-black text-emerald-600 uppercase my-3">Consulate General of Bangladesh, Dubai</div>
+            <img src="/images/bangladesh-embassy-logo.jpg" alt="Bangladesh Embassy" class="h-44">
+            <div class="text-xl font-black text-emerald-600 uppercase my-3">Consulate General of Bangladesh, Dubai</div>
         </div>
         <div id="role-list" class="flex flex-col justify-center items-center w-full gap-y-3 py-3"></div>
         <div class="flex flex-col justify-center items-center mb-6">
-            <div class="my-3 text-xs uppercase text-slate-400 ">Sponsored by</div>
-            <div class="flex gap-x-6 items-center">
+            <div class="my-1 text-xl text-white">Sponsored by</div>
+            <div class="flex flex-col gap-x-6 items-center">
                 <div class="flex-auto">
                     <img src="/images/amaar-clinic-logo.png" alt="Amaar Clinic" class="h-24">
+                </div>
+                <div class="flex-auto">
+                    <div class="text-white text-xl my-5">
+                        IT solutions by
+                    </div>
                 </div>
                 <div class="flex-auto">
                     <img src="/images/amc-logo.png" alt="Aser Al Madina" class="h-16">
