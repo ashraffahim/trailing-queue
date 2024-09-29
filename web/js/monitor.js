@@ -209,7 +209,7 @@ const startAdsSlide = () => {
     let interval = null;
     let slideIndex = 0;
 
-    const slideDelay = 5000;
+    const slideDelay = 15000;
 
     const slideProcess = () => {
         let prevSlideIndex = 0;
