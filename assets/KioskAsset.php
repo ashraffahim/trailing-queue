@@ -23,7 +23,7 @@ class KioskAsset extends AssetBundle
     public $css = [];
 
     public $js = [
-        'js/kiosk.js?v=1725092200',
+        'js/kiosk.js?v=1725092300',
     ];
 
     public $jsOptions = ['position' => \yii\web\View::POS_END];

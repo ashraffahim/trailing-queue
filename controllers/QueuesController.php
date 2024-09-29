@@ -105,11 +105,12 @@ class QueuesController extends _MainController
 
             if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
 
+            $strtotime = strtotime($queue->date . ' ' . $queue->time);
             $responseData['token'] = $queue->token;
             $responseData['floor'] = $assignedUser->floor;
             $responseData['room'] = $assignedUser->room;
-            $responseData['date'] = $queue->date;
-            $responseData['time'] = $queue->time;
+            $responseData['date'] = date('d M, Y', $strtotime);
+            $responseData['time'] = date('h:i:s', $strtotime);
 
             $transaction->commit();
         } catch (\Exception $e) {
