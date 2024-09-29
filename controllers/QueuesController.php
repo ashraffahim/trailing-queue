@@ -105,12 +105,29 @@ class QueuesController extends _MainController
 
             if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
 
+            $currentQueue = $assignedUser->getQueues()
+            ->select(['token'])
+            ->andWhere([
+                'date' => $queue->date,
+                'status' => [
+                    QueueManager::STATUS_CALLED,
+                    QueueManager::STATUS_RECALLED,
+                    QueueManager::STATUS_IN_PROGRESS
+                ]
+            ])
+            ->one();
+
+            if (is_null($currentQueue)) $currentToken = null;
+            else $currentToken = $currentQueue->token;
+
             $strtotime = strtotime($queue->date . ' ' . $queue->time);
+
             $responseData['token'] = $queue->token;
             $responseData['floor'] = $assignedUser->floor;
             $responseData['room'] = $assignedUser->room;
             $responseData['date'] = date('d M, Y', $strtotime);
             $responseData['time'] = date('h:i:s', $strtotime);
+            $responseData['currentToken'] = $currentToken;
 
             $transaction->commit();
         } catch (\Exception $e) {

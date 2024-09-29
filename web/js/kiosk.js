@@ -36,6 +36,8 @@ window.tokenRoles.forEach(role => {
             { size: 24.0, text: responseData.token },
             { size: 12.0, text: 'Floor - ' + responseData.floor + ', Room - ' + responseData.room },
             { size: 12.0, text: responseData.date + ' ' + responseData.time },
+            { size: 8.0, text: (responseData.currentToken != null ? ("Now serving " + responseData.currentToken) : "") },
+            { size: 8.0, text: "Please take a seat" },
             { size: 8.0, text: "Sponsored by" },
             { size: 12.0, text: "Amaar Clinic" },
             { size: 8.0, text: "IT solutions by" },
