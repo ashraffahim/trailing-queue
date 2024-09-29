@@ -8,5 +8,5 @@ return [
     'senderEmail' => 'noreply@example.com',
     'senderName' => 'Example.com mailer',
 
-    'printRequestURL' => 'http://192.168.1.111:8889'
+    'printRequestURL' => 'http://192.168.1.110:8889'
 ];
