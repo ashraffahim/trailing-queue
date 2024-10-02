@@ -31,7 +31,7 @@ $this->registerJs('selectClassic()');
 
             <div class="form-group">
                 <label class="input-label-classic">Task</label>
-                <div class="select-classic close-on-blur sm:max-w-60" id="duration-type" data-name="Role[task]" tabindex="0">
+                <div class="select-classic close-on-blur sm:max-w-60" data-name="Role[task]" tabindex="0">
                     <div class="select-value"><?= is_null($model->task) ? '' : PermissionManager::ROLES[$model->task] ?><input type="hidden" name="Role[task]" value="<?= $model->task ?>"></div>
                     <div class="select-options">
                         <a class="select-option" data-value="">&nbsp;</a>

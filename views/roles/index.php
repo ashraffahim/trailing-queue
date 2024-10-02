@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'is_open:boolean',
             'is_kiosk_visible:boolean',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Role $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

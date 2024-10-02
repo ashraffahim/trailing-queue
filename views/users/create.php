@@ -4,6 +4,7 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var app\models\databaseObjects\User $model */
+/** @var app\models\databaseObjects\Room[] $rooms */
 /** @var app\models\databaseObjects\Role[] $roles */
 
 $this->title = 'Create User';
@@ -16,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'rooms' => $rooms,
         'roles' => $roles,
     ]) ?>
 

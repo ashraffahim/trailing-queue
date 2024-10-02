@@ -72,6 +72,10 @@ $config = [
 
                 'reports/summary/<id:\d+>/<date:\d{4}-\d{2}-\d{2}>' => 'reports/user-summary',
 
+                'rooms/view/<id:\d+>' => 'rooms/view',
+                'rooms/update/<id:\d+>' => 'rooms/update',
+                'rooms/delete/<id:\d+>' => 'rooms/delete',
+
                 'users/view/<id:\d+>' => 'users/view',
                 'users/update/<id:\d+>' => 'users/update',
                 'users/delete/<id:\d+>' => 'users/delete',

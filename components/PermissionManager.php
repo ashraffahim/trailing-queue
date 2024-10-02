@@ -4,11 +4,13 @@ namespace app\components;
 
 class PermissionManager {
     // Privilege
-    public const PRIVILEGE_REPORT = 'report';
+    public const PRIVILEGE_REPORTS = 'report';
 
     public const PRIVILEGE_QUEUES_CREATE_TOKEN = 'queues.create_token';
     public const PRIVILEGE_QUEUES_CALL = 'queues.call';
     public const PRIVILEGE_QUEUES_MONITOR = 'queues.monitor';
+
+    public const PRIVILEGE_ROOMS = 'rooms';
 
     public const PRIVILEGE_ROLES = 'roles';
 
@@ -33,14 +35,16 @@ class PermissionManager {
     // Permissions
     public const ROLE_PRIVILEGE = [
         self::ROLE_OWNER => [
-            self::PRIVILEGE_REPORT,
+            self::PRIVILEGE_REPORTS,
+            self::PRIVILEGE_ROOMS,
             self::PRIVILEGE_ROLES,
             self::PRIVILEGE_USERS,
             self::PRIVILEGE_QUEUES_MONITOR,
             self::PRIVILEGE_ADS
         ],
         self::ROLE_ADMIN => [
-            self::PRIVILEGE_REPORT,
+            self::PRIVILEGE_REPORTS,
+            self::PRIVILEGE_ROOMS,
             self::PRIVILEGE_ROLES,
             self::PRIVILEGE_USERS,
             self::PRIVILEGE_QUEUES_MONITOR
@@ -57,7 +61,7 @@ class PermissionManager {
     ];
 
     public const TASK_PRIVILEGE = [
-        'reports' => self::PRIVILEGE_REPORT,
+        'reports' => self::PRIVILEGE_REPORTS,
         'queues' => [
             'kiosk' => self::PRIVILEGE_QUEUES_CREATE_TOKEN,
             'generate' => self::PRIVILEGE_QUEUES_CREATE_TOKEN,
@@ -72,6 +76,7 @@ class PermissionManager {
             'monitor' => self::PRIVILEGE_QUEUES_MONITOR,
             'monitor-socket' => self::PRIVILEGE_QUEUES_MONITOR,
         ],
+        'rooms' => self::PRIVILEGE_ROOMS,
         'roles' => self::PRIVILEGE_ROLES,
         'users' => self::PRIVILEGE_USERS,
         'ads' => self::PRIVILEGE_ADS
@@ -81,12 +86,14 @@ class PermissionManager {
         self::ROLE_OWNER => [
             '/reports' => 'Report',
             '/ads' => 'Ads',
+            '/rooms' => 'Rooms',
             '/roles' => 'Roles',
             '/users' => 'Users',
             '/queues/monitor' => 'Monitor',
         ],
         self::ROLE_ADMIN => [
             '/reports' => 'Report',
+            '/rooms' => 'Rooms',
             '/roles' => 'Roles',
             '/users' => 'Users',
             '/queues/monitor' => 'Monitor',

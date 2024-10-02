@@ -14,7 +14,6 @@ use Yii;
  * @property bool|null $is_open
  * @property bool|null $is_kiosk_visible
  *
- * @property RoleTokenCount[] $roleTokenCounts
  * @property User[] $users
  */
 class Role extends \yii\db\ActiveRecord
@@ -54,16 +53,6 @@ class Role extends \yii\db\ActiveRecord
             'is_open' => 'Is Open',
             'is_kiosk_visible' => 'Is Kiosk Visible',
         ];
-    }
-
-    /**
-     * Gets query for [[RoleTokenCounts]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRoleTokenCounts()
-    {
-        return $this->hasMany(RoleTokenCount::class, ['role_id' => 'id']);
     }
 
     /**

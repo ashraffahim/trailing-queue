@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\models\databaseObjects\User $model */
+/** @var app\models\databaseObjects\Room[] $rooms */
 /** @var app\models\databaseObjects\Role[] $roles */
 /** @var yii\widgets\ActiveForm $form */
 
@@ -38,20 +39,29 @@ $this->registerJs('selectClassic()');
             <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-80']) ?>
 
             <div class="flex gap-x-2 sm:max-w-80">
-                <?= $form->field($model, 'floor')->textInput(['class' => 'input-classic']) ?>
-
-                <?= $form->field($model, 'room')->textInput(['maxlength' => true, 'class' => 'input-classic']) ?>
-            </div>
-
-            <div class="form-group">
-                <label class="input-label-classic">Role</label>
-                <div class="select-classic close-on-blur sm:max-w-60" id="duration-type" data-name="User[role_id]" tabindex="0">
-                    <div class="select-value"><?= !is_null($model->role) ? $model->role->name : '' ?><input type="hidden" name="User[role_id]" value="<?= $model->role_id ?>"></div>
-                    <div class="select-options">
-                        <a class="select-option" data-value="">&nbsp;</a>
-                        <?php foreach ($roles as $role): ?>
-                            <a class="select-option" data-value="<?= $role->id ?>"><?= $role->name ?></a>
-                        <?php endforeach; ?>
+                <div class="form-group">
+                    <label class="input-label-classic">Room</label>
+                    <div class="select-classic close-on-blur sm:max-w-60" data-name="User[room_id]" tabindex="0">
+                        <div class="select-value"><?= !is_null($model->room) ? $model->room->name : '' ?><input type="hidden" name="User[room_id]" value="<?= $model->room_id ?>"></div>
+                        <div class="select-options">
+                            <a class="select-option" data-value="">&nbsp;</a>
+                            <?php foreach ($rooms as $room): ?>
+                                <a class="select-option" data-value="<?= $room->id ?>"><?= $room->name ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="form-group">
+                    <label class="input-label-classic">Role</label>
+                    <div class="select-classic close-on-blur sm:max-w-60" data-name="User[role_id]" tabindex="0">
+                        <div class="select-value"><?= !is_null($model->role) ? $model->role->name : '' ?><input type="hidden" name="User[role_id]" value="<?= $model->role_id ?>"></div>
+                        <div class="select-options">
+                            <a class="select-option" data-value="">&nbsp;</a>
+                            <?php foreach ($roles as $role): ?>
+                                <a class="select-option" data-value="<?= $role->id ?>"><?= $role->name ?></a>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>

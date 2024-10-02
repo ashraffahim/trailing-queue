@@ -2,18 +2,16 @@
 
 namespace app\controllers;
 
-use app\models\databaseObjects\User;
+use app\models\databaseObjects\Room;
 use yii\data\ActiveDataProvider;
 use app\controllers\_MainController;
-use app\models\databaseObjects\Role;
-use app\models\databaseObjects\Room;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * UsersController implements the CRUD actions for User model.
+ * RoomsController implements the CRUD actions for Room model.
  */
-class UsersController extends _MainController
+class RoomsController extends _MainController
 {
     /**
      * @inheritDoc
@@ -34,14 +32,14 @@ class UsersController extends _MainController
     }
 
     /**
-     * Lists all User models.
+     * Lists all Room models.
      *
      * @return string
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => User::find()->where(['!=', 'role_id', 1]),
+            'query' => Room::find(),
             /*
             'pagination' => [
                 'pageSize' => 50
@@ -60,7 +58,7 @@ class UsersController extends _MainController
     }
 
     /**
-     * Displays a single User model.
+     * Displays a single Room model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -73,40 +71,29 @@ class UsersController extends _MainController
     }
 
     /**
-     * Creates a new User model.
+     * Creates a new Room model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new Room();
 
-        
         if ($this->request->isPost) {
-            if ($model->load($this->request->post())) {
-
-                $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password_hash);
-
-                if ($model->save()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
-                }
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        $rooms = Room::find()->all();
-        $roles = Role::find()->where(['!=', 'task', 0])->all();
-
         return $this->render('create', [
             'model' => $model,
-            'rooms' => $rooms,
-            'roles' => $roles,
         ]);
     }
 
     /**
-     * Updates an existing User model.
+     * Updates an existing Room model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -116,35 +103,17 @@ class UsersController extends _MainController
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost) {
-            $post = $this->request->post();
-
-            $newPassword = $post['User']['password_hash'];
-            unset($post['User']['password_hash']);
-
-            if ($model->load($post)) {
-                if ($this->request->post('change_password') === '1') {
-                    $model->password_hash = \Yii::$app->security->generatePasswordHash($newPassword);
-                }
-    
-                if ($model->save()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
-                }
-            }
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        $rooms = Room::find()->all();
-        $roles = Role::find()->where(['!=', 'task', 0])->all();
 
         return $this->render('update', [
             'model' => $model,
-            'rooms' => $rooms,
-            'roles' => $roles,
         ]);
     }
 
     /**
-     * Deletes an existing User model.
+     * Deletes an existing Room model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -158,15 +127,15 @@ class UsersController extends _MainController
     }
 
     /**
-     * Finds the User model based on its primary key value.
+     * Finds the Room model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return User the loaded model
+     * @return Room the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = User::find()->where(['and', ['id' => $id], ['!=', 'role_id', 1]])->one()) !== null) {
+        if (($model = Room::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
