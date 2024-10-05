@@ -66,7 +66,7 @@ $this->registerJs('selectClassic()');
                 </div>
             </div>
 
-            <?= $form->field($model, 'is_open')->checkbox(['disabled' => true]) ?>
+            <?= $form->field($model, 'is_active')->checkbox() ?>
 
             <?php $model->password_hash = ''; ?>
             

@@ -387,6 +387,10 @@ class QueuesController extends _MainController
 
     public function actionCallToken($token) {}
 
+    /**
+     * Redundant method
+     * @deprecated
+     */
     public function actionOpenClose()
     {
         $this->response->format = Response::FORMAT_RAW;

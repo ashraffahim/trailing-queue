@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'email:email',
                     ['label' => 'Floor', 'value' => function($model) { return $model->room->floor; }],
                     ['label' => 'Room', 'value' => function($model) { return $model->room->name; }],
-                    'is_open:boolean',
+                    'is_active:boolean',
                 ],
             ]) ?>
         </div>
