@@ -8,7 +8,7 @@ use app\models\databaseObjects\Queue;
 use app\controllers\_MainController;
 use app\models\databaseObjects\Role;
 use app\models\databaseObjects\User;
-use app\models\databaseObjects\TokenCount;
+use app\models\databaseObjects\UserTokenCount;
 use app\models\exceptions\common\CannotSaveException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -57,8 +57,8 @@ class QueuesController extends _MainController
             return $user->id;
         }, $users);
 
-        /** @var TokenCount[] $allTokenCount */
-        $allTokenCount = TokenCount::find()
+        /** @var UserTokenCount[] $allUserTokenCount */
+        $allUserTokenCount = UserTokenCount::find()
             ->where(['user_id' => $userIds, 'date' => date('Y-m-d')])
             ->select(['*', '(`count` - `served`) AS `in_queue`'])
             ->orderBy(['in_queue' => SORT_ASC])
@@ -70,24 +70,24 @@ class QueuesController extends _MainController
 
         try {
 
-            if (empty($allTokenCount)) {
+            if (empty($allUserTokenCount)) {
                 foreach ($userIds as $userId) {
-                    $newTokenCount = new TokenCount();
-                    $newTokenCount->user_id = $userId;
-                    $newTokenCount->count = 0;
-                    $newTokenCount->served = 0;
-                    $newTokenCount->date = date('Y-m-d');
+                    $newUserTokenCount = new UserTokenCount();
+                    $newUserTokenCount->user_id = $userId;
+                    $newUserTokenCount->count = 0;
+                    $newUserTokenCount->served = 0;
+                    $newUserTokenCount->date = date('Y-m-d');
 
-                    if (!$newTokenCount->save()) throw new CannotSaveException($newTokenCount, 'Failed');
+                    if (!$newUserTokenCount->save()) throw new CannotSaveException($newUserTokenCount, 'Failed');
                 }
 
-                $tokenCount = $newTokenCount;
-            } else $tokenCount = $allTokenCount[0];
+                $tokenCount = $newUserTokenCount;
+            } else $tokenCount = $allUserTokenCount[0];
 
-            $roleTokenCount = 1;
+            $roleUserTokenCount = 1;
 
-            foreach ($allTokenCount as $summingTokenCount) {
-                $roleTokenCount += $summingTokenCount->count;
+            foreach ($allUserTokenCount as $summingUserTokenCount) {
+                $roleUserTokenCount += $summingUserTokenCount->count;
             }
 
             $assignedUser = $users[array_search($tokenCount->user_id, $userIds)];
@@ -97,7 +97,7 @@ class QueuesController extends _MainController
             if (!$tokenCount->save()) throw new CannotSaveException($tokenCount, 'Failed');
 
             $queue = new Queue();
-            $queue->token = QueueManager::createToken($role->token_prefix, $roleTokenCount);
+            $queue->token = QueueManager::createToken($role->token_prefix, $roleUserTokenCount);
             $queue->user_id = $assignedUser->id;
             $queue->date = date('Y-m-d');
             $queue->time = date('h:i:s');
@@ -231,8 +231,8 @@ class QueuesController extends _MainController
             return $this->asJson([]);
         }
 
-        /** @var TokenCount $tokenCount */
-        $tokenCount = TokenCount::find()
+        /** @var UserTokenCount $tokenCount */
+        $tokenCount = UserTokenCount::find()
             ->where(['user_id' => $user->id, 'date' => date('Y-m-d')])
             ->one();
 
@@ -327,8 +327,8 @@ class QueuesController extends _MainController
             return $user->id;
         }, $users);
 
-        /** @var TokenCount $allTokenCount */
-        $allTokenCount = TokenCount::find()
+        /** @var UserTokenCount $allUserTokenCount */
+        $allUserTokenCount = UserTokenCount::find()
             ->where(['user_id' => $userIds, 'date' => date('Y-m-d')])
             ->select(['*', '(`count` - `served`) AS `in_queue`'])
             ->orderBy(['in_queue' => SORT_ASC])
@@ -338,24 +338,24 @@ class QueuesController extends _MainController
 
         try {
 
-            if (empty($allTokenCount)) {
+            if (empty($allUserTokenCount)) {
                 foreach ($userIds as $userId) {
-                    $newTokenCount = new TokenCount();
-                    $newTokenCount->user_id = $userId;
-                    $newTokenCount->count = 0;
-                    $newTokenCount->served = 0;
-                    $newTokenCount->date = date('Y-m-d');
+                    $newUserTokenCount = new UserTokenCount();
+                    $newUserTokenCount->user_id = $userId;
+                    $newUserTokenCount->count = 0;
+                    $newUserTokenCount->served = 0;
+                    $newUserTokenCount->date = date('Y-m-d');
 
-                    if (!$newTokenCount->save()) throw new CannotSaveException($newTokenCount, 'Failed');
+                    if (!$newUserTokenCount->save()) throw new CannotSaveException($newUserTokenCount, 'Failed');
                 }
 
-                $tokenCount = $newTokenCount;
-            } else $tokenCount = $allTokenCount[0];
+                $tokenCount = $newUserTokenCount;
+            } else $tokenCount = $allUserTokenCount[0];
 
-            $roleTokenCount = 1;
+            $roleUserTokenCount = 1;
 
-            foreach ($allTokenCount as $summingTokenCount) {
-                $roleTokenCount += $summingTokenCount->count;
+            foreach ($allUserTokenCount as $summingUserTokenCount) {
+                $roleUserTokenCount += $summingUserTokenCount->count;
             }
 
             $currentQueue->status = QueueManager::STATUS_ENDED;
@@ -399,7 +399,7 @@ class QueuesController extends _MainController
 
         $user = \Yii::$app->user->identity;
 
-        $tokenCount = TokenCount::findOne(['user_id' => $user->id, 'date' => date('Y-m-d')]);
+        $tokenCount = UserTokenCount::findOne(['user_id' => $user->id, 'date' => date('Y-m-d')]);
 
         $transaction = \Yii::$app->db->beginTransaction();
 
@@ -409,7 +409,7 @@ class QueuesController extends _MainController
             if (!$user->save()) throw new CannotSaveException($user, 'Failed');
 
             if (is_null($tokenCount)) {
-                $tokenCount = new TokenCount();
+                $tokenCount = new UserTokenCount();
                 $tokenCount->user_id = $user->id;
                 $tokenCount->count = 0;
                 $tokenCount->served = 0;
@@ -432,7 +432,7 @@ class QueuesController extends _MainController
 
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
-        $tokenCount = TokenCount::find()
+        $tokenCount = UserTokenCount::find()
             ->where([
                 'and',
                 ['=', 'user_id', \Yii::$app->user->identity->id],

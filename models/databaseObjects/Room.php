@@ -11,7 +11,7 @@ use Yii;
  * @property string $name
  * @property int $floor
  *
- * @property TokenCount[] $tokenCounts
+ * @property UserTokenCount[] $tokenCounts
  * @property User[] $users
  */
 class Room extends \yii\db\ActiveRecord
@@ -49,13 +49,13 @@ class Room extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[TokenCounts]].
+     * Gets query for [[UserTokenCounts]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTokenCounts()
+    public function getUserTokenCounts()
     {
-        return $this->hasMany(TokenCount::class, ['room_id' => 'id']);
+        return $this->hasMany(UserTokenCount::class, ['room_id' => 'id']);
     }
 
     /**

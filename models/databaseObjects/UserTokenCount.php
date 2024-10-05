@@ -5,13 +5,12 @@ namespace app\models\databaseObjects;
 use Yii;
 
 /**
- * This is the model class for table "token_count".
+ * This is the model class for table "user_token_count".
  *
  * @property int $id
  * @property int $role_id
  * @property int $room_id
  * @property int $user_id
- * @property int $count
  * @property int|null $served
  * @property int|null $last_id
  * @property string $date
@@ -21,14 +20,14 @@ use Yii;
  * @property Room $room
  * @property User $user
  */
-class TokenCount extends \yii\db\ActiveRecord
+class UserTokenCount extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'token_count';
+        return 'user_token_count';
     }
 
     /**
@@ -37,8 +36,8 @@ class TokenCount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['role_id', 'room_id', 'user_id', 'count', 'date'], 'required'],
-            [['role_id', 'room_id', 'user_id', 'count', 'served', 'last_id'], 'integer'],
+            [['role_id', 'room_id', 'user_id', 'date'], 'required'],
+            [['role_id', 'room_id', 'user_id', 'served', 'last_id'], 'integer'],
             [['date'], 'safe'],
             [['last_id'], 'exist', 'skipOnError' => true, 'targetClass' => Queue::class, 'targetAttribute' => ['last_id' => 'id']],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
@@ -57,7 +56,6 @@ class TokenCount extends \yii\db\ActiveRecord
             'role_id' => 'Role ID',
             'room_id' => 'Room ID',
             'user_id' => 'User ID',
-            'count' => 'Count',
             'served' => 'Served',
             'last_id' => 'Last ID',
             'date' => 'Date',

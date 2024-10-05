@@ -1,6 +1,6 @@
 <?php
 
-use app\models\databaseObjects\TokenCount;
+use app\models\databaseObjects\UserTokenCount;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'label' => 'Name',
                     'format' => 'raw',
-                    'value' => function(TokenCount $model) {
+                    'value' => function(UserTokenCount $model) {
                         return Html::a($model->user->first_name . ' ' . $model->user->last_name, '/reports/summary/' . $model->user_id . '/' . $model->date, ['class' => 'underline hover:text-emerald-300']);
                     }
                 ],
@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'served',
                 [
                     'label' => 'Date',
-                    'value' => function(TokenCount $model) {
+                    'value' => function(UserTokenCount $model) {
                         return date('d M, Y', strtotime($model->date));
                     }
                 ],

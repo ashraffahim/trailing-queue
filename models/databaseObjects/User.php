@@ -22,7 +22,7 @@ use Yii;
  * @property Queue[] $queues
  * @property Role $role
  * @property Room $room
- * @property TokenCount[] $tokenCounts
+ * @property UserTokenCount[] $tokenCounts
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -107,12 +107,12 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[TokenCounts]].
+     * Gets query for [[UserTokenCounts]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTokenCounts()
+    public function getUserTokenCounts()
     {
-        return $this->hasMany(TokenCount::class, ['user_id' => 'id']);
+        return $this->hasMany(UserTokenCount::class, ['user_id' => 'id']);
     }
 }

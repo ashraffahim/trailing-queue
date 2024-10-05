@@ -5,7 +5,7 @@ namespace app\controllers;
 use app\controllers\_MainController;
 use app\models\databaseObjects\Queue;
 use app\models\databaseObjects\User;
-use app\models\databaseObjects\TokenCount;
+use app\models\databaseObjects\UserTokenCount;
 use DateTime;
 use DateTimeImmutable;
 use yii\data\ActiveDataProvider;
@@ -58,7 +58,7 @@ class ReportsController extends _MainController
         $from = $this->request->get('from', $oneMonthBack);
         $to = $this->request->get('to', date('Y-m-d'));
 
-        $queue = TokenCount::find()
+        $queue = UserTokenCount::find()
         ->select(['utc.*'])
         ->alias('utc')
         ->where([
