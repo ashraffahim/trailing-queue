@@ -14,6 +14,8 @@ use Yii;
  * @property bool|null $is_open
  * @property bool|null $is_kiosk_visible
  *
+ * @property Queue[] $queues
+ * @property UserTokenCount[] $userTokenCounts
  * @property User[] $users
  */
 class Role extends \yii\db\ActiveRecord
@@ -53,6 +55,26 @@ class Role extends \yii\db\ActiveRecord
             'is_open' => 'Is Open',
             'is_kiosk_visible' => 'Is Kiosk Visible',
         ];
+    }
+
+    /**
+     * Gets query for [[Queues]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQueues()
+    {
+        return $this->hasMany(Queue::class, ['role_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[UserTokenCounts]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserTokenCounts()
+    {
+        return $this->hasMany(UserTokenCount::class, ['role_id' => 'id']);
     }
 
     /**

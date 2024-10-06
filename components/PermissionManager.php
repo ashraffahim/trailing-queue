@@ -39,6 +39,7 @@ class PermissionManager {
             self::PRIVILEGE_ROOMS,
             self::PRIVILEGE_ROLES,
             self::PRIVILEGE_USERS,
+            self::PRIVILEGE_QUEUES_CREATE_TOKEN,
             self::PRIVILEGE_QUEUES_MONITOR,
             self::PRIVILEGE_ADS
         ],
@@ -89,6 +90,7 @@ class PermissionManager {
             '/rooms' => 'Rooms',
             '/roles' => 'Roles',
             '/users' => 'Users',
+            '/queues/kiosk' => 'Kiosk',
             '/queues/monitor' => 'Monitor',
         ],
         self::ROLE_ADMIN => [

@@ -38,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'username',
                 'email:email',
+                'is_active:boolean',
                 [
                     'class' => ActionColumn::class,
                     'urlCreator' => function ($action, User $model, $key, $index, $column) {

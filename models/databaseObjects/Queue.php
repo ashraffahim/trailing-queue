@@ -9,6 +9,8 @@ use Yii;
  *
  * @property int $id
  * @property string $token
+ * @property int|null $role_id
+ * @property int|null $room_id
  * @property int|null $user_id
  * @property string $date
  * @property string $time
@@ -20,8 +22,11 @@ use Yii;
  * @property string|null $end_time
  *
  * @property Queue[] $queues
+ * @property Role $role
+ * @property Room $room
  * @property Queue $trail
  * @property User $user
+ * @property UserTokenCount[] $userTokenCounts
  */
 class Queue extends \yii\db\ActiveRecord
 {
@@ -40,9 +45,11 @@ class Queue extends \yii\db\ActiveRecord
     {
         return [
             [['token', 'date', 'time', 'status'], 'required'],
-            [['user_id', 'trail_id', 'status', 'recall_count'], 'integer'],
+            [['role_id', 'room_id', 'user_id', 'trail_id', 'status', 'recall_count'], 'integer'],
             [['date', 'time', 'call_time', 'recall_time', 'end_time'], 'safe'],
             [['token'], 'string', 'max' => 8],
+            [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
+            [['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => Room::class, 'targetAttribute' => ['room_id' => 'id']],
             [['trail_id'], 'exist', 'skipOnError' => true, 'targetClass' => Queue::class, 'targetAttribute' => ['trail_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -56,6 +63,8 @@ class Queue extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'token' => 'Token',
+            'role_id' => 'Role ID',
+            'room_id' => 'Room ID',
             'user_id' => 'User ID',
             'date' => 'Date',
             'time' => 'Time',
@@ -79,6 +88,26 @@ class Queue extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Role]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRole()
+    {
+        return $this->hasOne(Role::class, ['id' => 'role_id']);
+    }
+
+    /**
+     * Gets query for [[Room]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoom()
+    {
+        return $this->hasOne(Room::class, ['id' => 'room_id']);
+    }
+
+    /**
      * Gets query for [[Trail]].
      *
      * @return \yii\db\ActiveQuery
@@ -96,5 +125,15 @@ class Queue extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * Gets query for [[UserTokenCounts]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserTokenCounts()
+    {
+        return $this->hasMany(UserTokenCount::class, ['last_id' => 'id']);
     }
 }

@@ -7,9 +7,11 @@ use app\components\QueueManager;
 use app\models\databaseObjects\Queue;
 use app\controllers\_MainController;
 use app\models\databaseObjects\Role;
+use app\models\databaseObjects\RoleTokenCount;
 use app\models\databaseObjects\User;
 use app\models\databaseObjects\UserTokenCount;
 use app\models\exceptions\common\CannotSaveException;
+use Yii;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -38,6 +40,87 @@ class QueuesController extends _MainController
 
     public function actionGenerate($id)
     {
+        if (!Util::isFetchRequest()) throw new ForbiddenHttpException();
+        
+        $this->response->format = Response::FORMAT_JSON;
+
+        /** @var Role $role */
+        $role = Role::find()->where(['id' => $id, 'is_open' => true, 'is_kiosk_visible' => true])->one();
+
+        if (is_null($role)) throw new NotFoundHttpException('Unknown service');
+
+        /** @var User[] $users */
+        $users = $role->getUsers()->andWhere(['is_active' => true])->all();
+
+        if (empty($users)) throw new NotFoundHttpException('No servers appointed');
+
+        $today = date('Y-m-d');
+
+        $roleTokenCounts = RoleTokenCount::find()->where(['role_id' => $role->id, 'date' => $today])->all();
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $totalTokenCount = 0;
+
+            if (empty($roleTokenCounts)) {
+                $roleTokenCount = $this->initializeRoleTokenCount($users, $today);
+            } else {
+                $roleTokenCount = $this->findMinTokenAssignedRoom($roleTokenCounts, $role->id, $today);
+                foreach ($roleTokenCounts as $_roleTokenCount) {
+                    $totalTokenCount += $_roleTokenCount->count;
+                }
+            }
+
+            $roleTokenCount->count += 1;
+
+            if (!$roleTokenCount->save()) throw new CannotSaveException($roleTokenCount);
+
+            $queue = new Queue();
+            $queue->token = QueueManager::createToken($role->token_prefix, $totalTokenCount + 1);
+            $queue->role_id = $role->id;
+            $queue->room_id = $roleTokenCount->room_id;
+            $queue->date = $today;
+            $queue->time = date('h:i:s');
+            $queue->status = QueueManager::STATUS_CREATED;
+
+            if (!$queue->save()) throw new CannotSaveException($queue);
+
+            $responseData = [];
+            $currentQueue = $role->getQueues()
+                ->select(['token'])
+                ->andWhere([
+                    'date' => $queue->date,
+                    'status' => [
+                        QueueManager::STATUS_CALLED,
+                        QueueManager::STATUS_RECALLED,
+                        QueueManager::STATUS_IN_PROGRESS
+                    ]
+                ])
+                ->one();
+
+            if (is_null($currentQueue)) $currentToken = null;
+            else $currentToken = $currentQueue->token;
+
+            $strtotime = strtotime($queue->date . ' ' . $queue->time);
+
+            $responseData['token'] = $queue->token;
+            $responseData['floor'] = $roleTokenCount->room->floor;
+            $responseData['room'] = $roleTokenCount->room->name;
+            $responseData['date'] = date('d M, Y', $strtotime);
+            $responseData['time'] = date('h:i:s', $strtotime);
+            $responseData['currentToken'] = $currentToken;
+
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+        return $responseData;
+    }
+
+    public function actionGenerateOld($id)
+    {
         $this->response->format = Response::FORMAT_JSON;
 
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
@@ -48,45 +131,47 @@ class QueuesController extends _MainController
         if (is_null($role)) throw new NotFoundHttpException('Unknown service');
 
         /** @var \app\models\databaseObjects\User[] $users */
-        $users = $role->users;
-        // ->andWhere(['is_open' => true])
+        $users = $role->getUsers()->andWhere(['is_active' => true])->all();
 
         if (empty($users)) throw new NotFoundHttpException('No servers appointed');
 
-        $userIds = array_map(function ($user) {
-            return $user->id;
-        }, $users);
+        $roomIds = [];
 
-        /** @var UserTokenCount[] $allUserTokenCount */
-        $allUserTokenCount = UserTokenCount::find()
-            ->where(['user_id' => $userIds, 'date' => date('Y-m-d')])
-            ->select(['*', '(`count` - `served`) AS `in_queue`'])
+        foreach ($users as $user) {
+            if (!in_array($user->room_id, $roomIds)) $roomIds[] = $user->room_id;
+        }
+
+        /** @var RoleTokenCount[] $allTokenCount */
+        $allRoleTokenCount = RoleTokenCount::find()
+            ->where(['role_id' => $role->id, 'date' => date('Y-m-d')])
             ->orderBy(['in_queue' => SORT_ASC])
             ->all();
 
         $responseData = [];
 
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
 
         try {
 
             if (empty($allUserTokenCount)) {
                 foreach ($userIds as $userId) {
-                    $newUserTokenCount = new UserTokenCount();
-                    $newUserTokenCount->user_id = $userId;
-                    $newUserTokenCount->count = 0;
-                    $newUserTokenCount->served = 0;
-                    $newUserTokenCount->date = date('Y-m-d');
+                    $newRoleTokenCount = new RoleTokenCount();
+                    $newRoleTokenCount->room_id = $user->room_id;
+                    $newRoleTokenCount->role_id = $user->role_id;
+                    $newRoleTokenCount->user_id = $user->id;
+                    $newRoleTokenCount->count = 0;
+                    $newRoleTokenCount->served = 0;
+                    $newRoleTokenCount->date = date('Y-m-d');
 
-                    if (!$newUserTokenCount->save()) throw new CannotSaveException($newUserTokenCount, 'Failed');
+                    if (!$newRoleTokenCount->save()) throw new CannotSaveException($newRoleTokenCount, 'Failed');
                 }
 
-                $tokenCount = $newUserTokenCount;
-            } else $tokenCount = $allUserTokenCount[0];
+                $tokenCount = $newRoleTokenCount;
+            } else $tokenCount = $allRoleTokenCount[0];
 
             $roleUserTokenCount = 1;
 
-            foreach ($allUserTokenCount as $summingUserTokenCount) {
+            foreach ($allRoleTokenCount as $summingUserTokenCount) {
                 $roleUserTokenCount += $summingUserTokenCount->count;
             }
 
@@ -106,16 +191,16 @@ class QueuesController extends _MainController
             if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
 
             $currentQueue = $assignedUser->getQueues()
-            ->select(['token'])
-            ->andWhere([
-                'date' => $queue->date,
-                'status' => [
-                    QueueManager::STATUS_CALLED,
-                    QueueManager::STATUS_RECALLED,
-                    QueueManager::STATUS_IN_PROGRESS
-                ]
-            ])
-            ->one();
+                ->select(['token'])
+                ->andWhere([
+                    'date' => $queue->date,
+                    'status' => [
+                        QueueManager::STATUS_CALLED,
+                        QueueManager::STATUS_RECALLED,
+                        QueueManager::STATUS_IN_PROGRESS
+                    ]
+                ])
+                ->one();
 
             if (is_null($currentQueue)) $currentToken = null;
             else $currentToken = $currentQueue->token;
@@ -147,7 +232,7 @@ class QueuesController extends _MainController
         /** @var Queue $previousQueue */
         $currentQueue = Queue::find()
             ->where([
-                'user_id' => \Yii::$app->user->identity,
+                'user_id' => Yii::$app->user->identity,
                 'date' => date('Y-m-d'),
                 'status' => [
                     QueueManager::STATUS_CALLED,
@@ -157,7 +242,7 @@ class QueuesController extends _MainController
             ])->one();
 
         if (is_null($currentQueue)) {
-            \Yii::$app->response->statusCode = 204;
+            Yii::$app->response->statusCode = 204;
             return $this->asJson([]);
         }
 
@@ -172,7 +257,7 @@ class QueuesController extends _MainController
         $forwardRoles = Role::find()
             ->where([
                 'and',
-                ['!=', 'id', \Yii::$app->user->identity->role_id],
+                ['!=', 'id', Yii::$app->user->identity->role_id],
                 ['is_open' => true],
                 ['is_kiosk_visible' => false]
             ])
@@ -186,7 +271,7 @@ class QueuesController extends _MainController
 
         $this->layout = 'blank-blue-gradient';
         return $this->render('call', [
-            'openCloseText' => \Yii::$app->user->identity->is_open ? 'Close' : 'Open',
+            'openCloseText' => Yii::$app->user->identity->is_open ? 'Close' : 'Open',
             'forwardRoles' => $rolesArray
         ]);
     }
@@ -195,7 +280,7 @@ class QueuesController extends _MainController
     {
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
-        $user = \Yii::$app->user->identity;
+        $user = Yii::$app->user->identity;
 
         /** @var Queue $previousQueue */
         $previousQueue = Queue::find()
@@ -227,7 +312,7 @@ class QueuesController extends _MainController
             ->one();
 
         if (is_null($queue)) {
-            \Yii::$app->response->statusCode = 204;
+            Yii::$app->response->statusCode = 204;
             return $this->asJson([]);
         }
 
@@ -238,7 +323,7 @@ class QueuesController extends _MainController
 
         if (is_null($tokenCount)) throw new ForbiddenHttpException('Queue empty');
 
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
 
         try {
             $queue->status = QueueManager::STATUS_CALLED;
@@ -268,7 +353,7 @@ class QueuesController extends _MainController
     {
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
-        $user = \Yii::$app->user->identity;
+        $user = Yii::$app->user->identity;
 
         /** @var Queue $queue */
         $queue = Queue::find()
@@ -279,7 +364,7 @@ class QueuesController extends _MainController
             ])->one();
 
         if (is_null($queue)) {
-            \Yii::$app->response->statusCode = 204;
+            Yii::$app->response->statusCode = 204;
             return $this->asJson([]);
         }
 
@@ -296,7 +381,7 @@ class QueuesController extends _MainController
 
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
-        $currentUserId = (int) \Yii::$app->user->identity->id;
+        $currentUserId = (int) Yii::$app->user->identity->id;
 
         $currentQueue = Queue::findOne([
             'user_id' => $currentUserId,
@@ -334,7 +419,7 @@ class QueuesController extends _MainController
             ->orderBy(['in_queue' => SORT_ASC])
             ->all();
 
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
 
         try {
 
@@ -397,11 +482,11 @@ class QueuesController extends _MainController
 
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
-        $user = \Yii::$app->user->identity;
+        $user = Yii::$app->user->identity;
 
         $tokenCount = UserTokenCount::findOne(['user_id' => $user->id, 'date' => date('Y-m-d')]);
 
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
 
         try {
             $user->is_open = !$user->is_open;
@@ -428,14 +513,14 @@ class QueuesController extends _MainController
 
     public function actionNewTokenInQueue()
     {
-        \Yii::$app->log->targets[0]->enabled = false;
+        Yii::$app->log->targets[0]->enabled = false;
 
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
         $tokenCount = UserTokenCount::find()
             ->where([
                 'and',
-                ['=', 'user_id', \Yii::$app->user->identity->id],
+                ['=', 'user_id', Yii::$app->user->identity->id],
                 ['=', 'date', date('Y-m-d')],
                 ['>', '(`count` - `served`)', 0]
             ])->one();
@@ -461,7 +546,7 @@ class QueuesController extends _MainController
             ];
         }
 
-        $ads = glob(\Yii::getAlias('@app/web/data/ads/*'));
+        $ads = glob(Yii::getAlias('@app/web/data/ads/*'));
 
         $adsArray = [];
 
@@ -478,7 +563,7 @@ class QueuesController extends _MainController
 
     public function actionMonitorSocket($lastLoadedId, $firstLoadedId)
     {
-        \Yii::$app->log->targets[0]->enabled = false;
+        Yii::$app->log->targets[0]->enabled = false;
 
         $this->response->format = Response::FORMAT_JSON;
 
@@ -585,5 +670,69 @@ class QueuesController extends _MainController
         }
 
         return ['queue' => $queue, 'called' => $called, 'recalled' => $recalled, 'ended' => $ended];
+    }
+
+    private function initializeRoleTokenCount(array $users, string $date): RoleTokenCount
+    {
+        // Called within db transaction
+        $initializedRooms = [];
+
+        foreach ($users as $user) {
+            $userTokenCount = new UserTokenCount();
+            $userTokenCount->role_id = $user->role_id;
+            $userTokenCount->room_id = $user->room_id;
+            $userTokenCount->user_id = $user->id;
+            $userTokenCount->served = 0;
+            $userTokenCount->date = $date;
+
+            if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount);
+
+            if (in_array($user->room_id, $initializedRooms)) continue;
+
+            $initializedRooms[] = $user->room_id;
+
+            $roleTokenCount = new RoleTokenCount();
+            $roleTokenCount->role_id = $user->role_id;
+            $roleTokenCount->room_id = $user->room_id;
+            $roleTokenCount->count = 0;
+            $roleTokenCount->date = $date;
+
+            if (!$roleTokenCount->save()) throw new CannotSaveException($roleTokenCount);
+        }
+
+        return $roleTokenCount;
+    }
+
+    private function findMinTokenAssignedRoom(array $roleTokenCounts, int $roleId, string $date) : RoleTokenCount
+    {
+        $roomTokenPerUser = [];
+        $totalRoomTokenCount = [];
+        $totalUsersInRoom = [];
+
+        $userTokenCounts = UserTokenCount::find()->where(['role_id' => $roleId, 'date' => $date])->all();
+
+        foreach ($userTokenCounts as $userTokenCount) {
+            if (!array_key_exists($userTokenCount->room_id, $totalRoomTokenCount)) $totalRoomTokenCount[$userTokenCount->room_id] = 0;
+            $totalRoomTokenCount[$userTokenCount->room_id] -= $userTokenCount->served;
+
+            if (!array_key_exists($userTokenCount->room_id, $totalUsersInRoom)) $totalUsersInRoom[$userTokenCount->room_id] = 0;
+            $totalUsersInRoom[$userTokenCount->room_id] += 1;
+        }
+
+        foreach ($roleTokenCounts as $roleTokenCount) {
+            $totalRoomTokenCount[$roleTokenCount->room_id] += $roleTokenCount->count;
+        }
+
+        foreach ($totalRoomTokenCount as $roomId => $roomTokenCount) {
+            $roomTokenPerUser[$roomId] = $roomTokenCount / $totalUsersInRoom[$roomId];
+        }
+
+        $minTokenRoomId = array_search(min($roomTokenPerUser), $roomTokenPerUser);
+
+        foreach ($roleTokenCounts as $roleTokenCount) {
+            if ($minTokenRoomId === $roleTokenCount->room_id) return $roleTokenCount;
+        }
+
+        return null;
     }
 }
