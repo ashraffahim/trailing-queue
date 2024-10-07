@@ -14,6 +14,7 @@ use Yii;
  * @property int|null $user_id
  * @property string $date
  * @property string $time
+ * @property int|null $priority_id
  * @property int|null $trail_id
  * @property int $status
  * @property string|null $call_time
@@ -21,12 +22,13 @@ use Yii;
  * @property string|null $recall_time
  * @property string|null $end_time
  *
+ * @property Queue $priority
+ * @property Queue $queue
  * @property Queue[] $queues
  * @property Role $role
  * @property Room $room
  * @property Queue $trail
  * @property User $user
- * @property UserTokenCount[] $userTokenCounts
  */
 class Queue extends \yii\db\ActiveRecord
 {
@@ -45,9 +47,11 @@ class Queue extends \yii\db\ActiveRecord
     {
         return [
             [['token', 'date', 'time', 'status'], 'required'],
-            [['role_id', 'room_id', 'user_id', 'trail_id', 'status', 'recall_count'], 'integer'],
+            [['role_id', 'room_id', 'user_id', 'priority_id', 'trail_id', 'status', 'recall_count'], 'integer'],
             [['date', 'time', 'call_time', 'recall_time', 'end_time'], 'safe'],
             [['token'], 'string', 'max' => 8],
+            [['priority_id'], 'unique'],
+            [['priority_id'], 'exist', 'skipOnError' => true, 'targetClass' => Queue::class, 'targetAttribute' => ['priority_id' => 'id']],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
             [['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => Room::class, 'targetAttribute' => ['room_id' => 'id']],
             [['trail_id'], 'exist', 'skipOnError' => true, 'targetClass' => Queue::class, 'targetAttribute' => ['trail_id' => 'id']],
@@ -68,6 +72,7 @@ class Queue extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'date' => 'Date',
             'time' => 'Time',
+            'priority_id' => 'Priority ID',
             'trail_id' => 'Trail ID',
             'status' => 'Status',
             'call_time' => 'Call Time',
@@ -75,6 +80,26 @@ class Queue extends \yii\db\ActiveRecord
             'recall_time' => 'Recall Time',
             'end_time' => 'End Time',
         ];
+    }
+
+    /**
+     * Gets query for [[Priority]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPriority()
+    {
+        return $this->hasOne(Queue::class, ['id' => 'priority_id']);
+    }
+
+    /**
+     * Gets query for [[Queue]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQueue()
+    {
+        return $this->hasOne(Queue::class, ['priority_id' => 'id']);
     }
 
     /**
@@ -125,15 +150,5 @@ class Queue extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
-    }
-
-    /**
-     * Gets query for [[UserTokenCounts]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserTokenCounts()
-    {
-        return $this->hasMany(UserTokenCount::class, ['last_id' => 'id']);
     }
 }

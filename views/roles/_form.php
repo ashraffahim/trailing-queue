@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\models\databaseObjects\Role $model */
+/** @var app\models\databaseObjects\Role[] $roles */
 /** @var yii\widgets\ActiveForm $form */
 
 SelectClassicAsset::register($this);
@@ -37,6 +38,19 @@ $this->registerJs('selectClassic()');
                         <a class="select-option" data-value="">&nbsp;</a>
                         <?php foreach (PermissionManager::ROLES as $id => $name): ?>
                             <a class="select-option" data-value="<?= $id ?>"><?= $name ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="input-label-classic">Priority for</label>
+                <div class="select-classic close-on-blur sm:max-w-60" data-name="Role[priority_for_id]" tabindex="0">
+                    <div class="select-value"><?= !is_null($model->priority_for_id) ? $model->priorityFor->name : '' ?><input type="hidden" name="User[priority_for_id]" value="<?= $model->priority_for_id ?>"></div>
+                    <div class="select-options">
+                        <a class="select-option" data-value="">&nbsp;</a>
+                        <?php foreach ($roles as $role): ?>
+                            <a class="select-option" data-value="<?= $role->id ?>"><?= $role->name ?></a>
                         <?php endforeach; ?>
                     </div>
                 </div>

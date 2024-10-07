@@ -34,6 +34,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attributes' => [
                     'name',
                     'token_prefix',
+                    [
+                        'label' => 'Priority for',
+                        'value' => function (\app\models\databaseObjects\Role $model) { return !is_null($model->priorityFor) ? $model->priorityFor->name : ''; }
+                    ],
                     'is_open:boolean',
                     'is_kiosk_visible:boolean',
                 ],

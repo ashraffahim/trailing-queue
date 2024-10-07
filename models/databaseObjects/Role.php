@@ -11,10 +11,14 @@ use Yii;
  * @property string $name
  * @property string|null $token_prefix
  * @property int $task
+ * @property int|null $priority_for_id
  * @property bool|null $is_open
  * @property bool|null $is_kiosk_visible
  *
+ * @property Role $priorityFor
  * @property Queue[] $queues
+ * @property Role $role
+ * @property RoleTokenCount[] $roleTokenCounts
  * @property UserTokenCount[] $userTokenCounts
  * @property User[] $users
  */
@@ -35,10 +39,12 @@ class Role extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'task'], 'required'],
-            [['task'], 'integer'],
+            [['task', 'priority_for_id'], 'integer'],
             [['is_open', 'is_kiosk_visible'], 'boolean'],
             [['name'], 'string', 'max' => 20],
             [['token_prefix'], 'string', 'max' => 3],
+            [['priority_for_id'], 'unique'],
+            [['priority_for_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['priority_for_id' => 'id']],
         ];
     }
 
@@ -52,9 +58,20 @@ class Role extends \yii\db\ActiveRecord
             'name' => 'Name',
             'token_prefix' => 'Token Prefix',
             'task' => 'Task',
+            'priority_for_id' => 'Priority For ID',
             'is_open' => 'Is Open',
             'is_kiosk_visible' => 'Is Kiosk Visible',
         ];
+    }
+
+    /**
+     * Gets query for [[PriorityFor]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPriorityFor()
+    {
+        return $this->hasOne(Role::class, ['id' => 'priority_for_id']);
     }
 
     /**
@@ -65,6 +82,26 @@ class Role extends \yii\db\ActiveRecord
     public function getQueues()
     {
         return $this->hasMany(Queue::class, ['role_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Role]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRole()
+    {
+        return $this->hasOne(Role::class, ['priority_for_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[RoleTokenCounts]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoleTokenCounts()
+    {
+        return $this->hasMany(RoleTokenCount::class, ['role_id' => 'id']);
     }
 
     /**

@@ -87,8 +87,11 @@ class RolesController extends _MainController
             $model->loadDefaultValues();
         }
 
+        $roles = Role::findAll(['priority_for_id' => null, 'is_open' => true, 'is_kiosk_visible' => true]);
+
         return $this->render('create', [
             'model' => $model,
+            'roles' => $roles,
         ]);
     }
 
@@ -107,8 +110,11 @@ class RolesController extends _MainController
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $roles = Role::findAll(['priority_for_id' => null, 'is_open' => true, 'is_kiosk_visible' => true]);
+
         return $this->render('update', [
             'model' => $model,
+            'roles' => $roles,
         ]);
     }
 
