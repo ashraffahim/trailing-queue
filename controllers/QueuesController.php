@@ -232,7 +232,7 @@ class QueuesController extends _MainController
         /** @var Queue $previousQueue */
         $currentQueue = Queue::find()
             ->where([
-                'user_id' => Yii::$app->user->identity,
+                'user_id' => Yii::$app->user->identity->id,
                 'date' => date('Y-m-d'),
                 'status' => [
                     QueueManager::STATUS_CALLED,
