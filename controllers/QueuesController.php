@@ -72,20 +72,20 @@ class QueuesController extends _MainController
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $totalRegularTokenCount = 0;
+            $totalPriorityTokenCount = 0;
 
+            // Initialize token counter
             if (empty($roleTokenCounts)) {
                 $roleTokenCount = $this->initializeRoleTokenCount($users, $today);
             } else {
                 $roleTokenCount = $this->findMinTokenAssignedRoom($roleTokenCounts, $roleId, $today);
                 foreach ($roleTokenCounts as $_roleTokenCount) {
                     $totalRegularTokenCount += $_roleTokenCount->count;
+                    $totalPriorityTokenCount += $_roleTokenCount->priority_count;
                 }
             }
 
-            $roleTokenCount->count += 1;
-
-            if (!$roleTokenCount->save()) throw new CannotSaveException($roleTokenCount);
-
+            // Create token
             $queue = new Queue();
             $queue->role_id = $roleId;
             $queue->room_id = $roleTokenCount->room_id;
@@ -93,17 +93,23 @@ class QueuesController extends _MainController
             $queue->time = date('h:i:s');
             $queue->status = QueueManager::STATUS_CREATED;
 
-            $currentToken = $this->getCalledToken($roleId, $today);
+            $currentToken = $this->getCurrentTokenOfRoom($roleId, $roleTokenCount->room_id, $today);
 
-            $currentTokenId = $currentToken->id ?? 0;
-            $priorityTokenCount = $this->getPriorityTokenCount($roleId, $today);
-            
+            // Token count increment
+            $roleTokenCount->count += 1;
+
             if ($isPriority) {
-                $queue->token = QueueManager::createToken($role->token_prefix, $priorityTokenCount + 1);
-                $queue->priority_id = $this->getPriorityTokenShadowId($roleId, $currentTokenId, $today);
+                $queue->token = QueueManager::createToken($role->token_prefix, $totalPriorityTokenCount + 1);
+
+                if (!is_null($currentToken))
+                    $queue->priority_id = $this->getPriorityTokenShadowId($roleId, $currentToken->id, $today);
+
+                $roleTokenCount->priority_count += 1;
             } else {
-                $queue->token = QueueManager::createToken($role->token_prefix, $totalRegularTokenCount - $priorityTokenCount + 1);
+                $queue->token = QueueManager::createToken($role->token_prefix, $totalRegularTokenCount - $totalPriorityTokenCount + 1);
             }
+
+            if (!$roleTokenCount->save()) throw new CannotSaveException($roleTokenCount);
 
             if (!$queue->save()) throw new CannotSaveException($queue);
 
@@ -121,111 +127,6 @@ class QueuesController extends _MainController
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();
-            throw $e;
-        }
-
-        return $responseData;
-    }
-
-    public function actionGenerateOld($id)
-    {
-        $this->response->format = Response::FORMAT_JSON;
-
-        if (!Util::isFetchRequest()) throw new NotFoundHttpException();
-
-        /** @var Role $role */
-        $role = Role::find()->where(['id' => $id, 'is_open' => true, 'is_kiosk_visible' => true])->one();
-
-        if (is_null($role)) throw new NotFoundHttpException('Unknown service');
-
-        /** @var \app\models\databaseObjects\User[] $users */
-        $users = $role->getUsers()->andWhere(['is_active' => true])->all();
-
-        if (empty($users)) throw new NotFoundHttpException('No servers appointed');
-
-        $roomIds = [];
-
-        foreach ($users as $user) {
-            if (!in_array($user->room_id, $roomIds)) $roomIds[] = $user->room_id;
-        }
-
-        /** @var RoleTokenCount[] $allTokenCount */
-        $allRoleTokenCount = RoleTokenCount::find()
-            ->where(['role_id' => $role->id, 'date' => date('Y-m-d')])
-            ->orderBy(['in_queue' => SORT_ASC])
-            ->all();
-
-        $responseData = [];
-
-        $transaction = Yii::$app->db->beginTransaction();
-
-        try {
-
-            if (empty($allUserTokenCount)) {
-                foreach ($userIds as $userId) {
-                    $newRoleTokenCount = new RoleTokenCount();
-                    $newRoleTokenCount->room_id = $user->room_id;
-                    $newRoleTokenCount->role_id = $user->role_id;
-                    $newRoleTokenCount->user_id = $user->id;
-                    $newRoleTokenCount->count = 0;
-                    $newRoleTokenCount->served = 0;
-                    $newRoleTokenCount->date = date('Y-m-d');
-
-                    if (!$newRoleTokenCount->save()) throw new CannotSaveException($newRoleTokenCount, 'Failed');
-                }
-
-                $tokenCount = $newRoleTokenCount;
-            } else $tokenCount = $allRoleTokenCount[0];
-
-            $roleUserTokenCount = 1;
-
-            foreach ($allRoleTokenCount as $summingUserTokenCount) {
-                $roleUserTokenCount += $summingUserTokenCount->count;
-            }
-
-            $assignedUser = $users[array_search($tokenCount->user_id, $userIds)];
-
-            $tokenCount->count += 1;
-
-            if (!$tokenCount->save()) throw new CannotSaveException($tokenCount, 'Failed');
-
-            $queue = new Queue();
-            $queue->token = QueueManager::createToken($role->token_prefix, $roleUserTokenCount);
-            $queue->user_id = $assignedUser->id;
-            $queue->date = date('Y-m-d');
-            $queue->time = date('h:i:s');
-            $queue->status = QueueManager::STATUS_CREATED;
-
-            if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
-
-            $currentQueue = $assignedUser->getQueues()
-                ->select(['token'])
-                ->andWhere([
-                    'date' => $queue->date,
-                    'status' => [
-                        QueueManager::STATUS_CALLED,
-                        QueueManager::STATUS_RECALLED,
-                        QueueManager::STATUS_IN_PROGRESS
-                    ]
-                ])
-                ->one();
-
-            if (is_null($currentQueue)) $currentToken = null;
-            else $currentToken = $currentQueue->token;
-
-            $strtotime = strtotime($queue->date . ' ' . $queue->time);
-
-            $responseData['token'] = $queue->token;
-            $responseData['floor'] = $assignedUser->room->floor;
-            $responseData['room'] = $assignedUser->room->name;
-            $responseData['date'] = date('d M, Y', $strtotime);
-            $responseData['time'] = date('h:i:s', $strtotime);
-            $responseData['currentToken'] = $currentToken;
-
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollBack();
-
             throw $e;
         }
 
@@ -744,12 +645,13 @@ class QueuesController extends _MainController
         return null;
     }
 
-    private function getCalledToken(int $roleId, string $date): ?Queue
+    private function getCurrentTokenOfRoom(int $roleId, int $roomId, string $date): ?Queue
     {
         $currentQueue = Queue::find()
-            ->select(['token'])
+            ->select(['id', 'token'])
             ->where([
                 'role_id' => $roleId,
+                'room_id' => $roomId,
                 'date' => $date,
                 'status' => [
                     QueueManager::STATUS_CALLED,
@@ -759,19 +661,21 @@ class QueuesController extends _MainController
             ])
             ->one();
 
-        return $currentQueue;
-    }
+        if (!is_null($currentQueue))
+            return $currentQueue;
 
-    private function getPriorityTokenCount(int $roleId, string $date): int
-    {
-        $priorityTokens = Queue::find()
-            ->where(['not', ['priority_id' => null]])
-            ->andWhere([
+        $currentQueue = Queue::find()
+            ->select(['id', 'token'])
+            ->where([
                 'role_id' => $roleId,
-                'date' => $date
-            ]);
-
-        return $priorityTokens->count();
+                'room_id' => $roomId,
+                'date' => $date,
+                'status' => QueueManager::STATUS_CREATED
+            ])
+            ->limit(1)
+            ->one();
+        
+        return $currentQueue;
     }
 
     private function getPriorityTokenShadowId(int $roleId, int $currentTokenId, string $date): int
