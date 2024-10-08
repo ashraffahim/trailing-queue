@@ -76,9 +76,12 @@ class QueuesController extends _MainController
 
             // Initialize token counter
             if (empty($roleTokenCounts)) {
+
                 $roleTokenCount = $this->initializeRoleTokenCount($users, $today);
             } else {
+
                 $roleTokenCount = $this->findMinTokenAssignedRoom($roleTokenCounts, $roleId, $today);
+
                 foreach ($roleTokenCounts as $_roleTokenCount) {
                     $totalRegularTokenCount += $_roleTokenCount->count;
                     $totalPriorityTokenCount += $_roleTokenCount->priority_count;
@@ -426,17 +429,26 @@ class QueuesController extends _MainController
 
         if (!Util::isFetchRequest()) throw new NotFoundHttpException();
 
-        $tokenCount = UserTokenCount::find()
-            ->where([
-                'and',
-                ['=', 'user_id', Yii::$app->user->identity->id],
-                ['=', 'date', date('Y-m-d')],
-                ['>', '(`count` - `served`)', 0]
-            ])->one();
+        $today = date('Y-m-d');
 
+        $served = UserTokenCount::find()
+            ->where([
+                'role_id' => Yii::$app->user->identity->role_id,
+                'room_id' => Yii::$app->user->identity->room_id,
+                'date' => $today
+            ])->sum('served');
+        
+        $count = RoleTokenCount::find()
+            ->where([
+                'role_id' => Yii::$app->user->identity->role_id,
+                'room_id' => Yii::$app->user->identity->room_id,
+                'date' => $today
+            ])
+            ->sum('count');
+        
         $this->response->format = Response::FORMAT_RAW;
 
-        if (!is_null($tokenCount)) return true;
+        if ($count - $served) return true;
 
         return false;
     }
@@ -674,7 +686,7 @@ class QueuesController extends _MainController
             ])
             ->limit(1)
             ->one();
-        
+
         return $currentQueue;
     }
 
