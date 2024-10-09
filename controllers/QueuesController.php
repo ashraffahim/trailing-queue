@@ -193,11 +193,20 @@ class QueuesController extends _MainController
 
         $user = Yii::$app->user->identity;
 
+        $today = date('Y-m-d');
+
+        /** @var UserTokenCount $userTokenCount */
+        $userTokenCount = UserTokenCount::find()
+            ->where(['user_id' => $user->id, 'date' => $today])
+            ->one();
+
+        if (is_null($userTokenCount)) throw new ForbiddenHttpException('Queue empty');
+
         /** @var Queue $previousQueue */
         $previousQueue = Queue::find()
             ->where([
                 'user_id' => $user->id,
-                'date' => date('Y-m-d'),
+                'date' => $today,
                 'status' => [
                     QueueManager::STATUS_CALLED,
                     QueueManager::STATUS_RECALLED,
@@ -205,47 +214,65 @@ class QueuesController extends _MainController
                 ]
             ])->one();
 
-        if (!is_null($previousQueue)) {
-            $previousQueue->status = QueueManager::STATUS_ENDED;
-            $previousQueue->end_time = date('h:i:s');
-
-            if (!$previousQueue->save()) throw new CannotSaveException($previousQueue, 'Failed');
-        }
-
-        /** @var Queue $queue */
-        $queue = Queue::find()
+        $regularQueue = Queue::find()
             ->where([
-                'user_id' => $user->id,
-                'date' => date('Y-m-d'),
+                'role_id' => $user->role_id,
+                'room_id' => $user->room_id,
+                'date' => $today,
                 'status' => QueueManager::STATUS_CREATED
             ])
             ->limit(1)
             ->one();
 
-        if (is_null($queue)) {
-            Yii::$app->response->statusCode = 204;
-            return $this->asJson([]);
+        $queue = null;
+        
+        if (!is_null($regularQueue)) {
+            $priorityQueue = Queue::find()
+                ->where([
+                    'and',
+                    ['=', 'role_id', $user->role_id],
+                    ['=', 'room_id', $user->room_id],
+                    ['=', 'date', $today],
+                    ['=', 'status', QueueManager::STATUS_CREATED],
+                    ['<', 'priority_id', $regularQueue->id]
+                ])
+                ->limit(1)
+                ->one();
+
+            if (!is_null($priorityQueue))
+                $queue = $priorityQueue;
+            else
+                $queue = $regularQueue;
         }
-
-        /** @var UserTokenCount $tokenCount */
-        $tokenCount = UserTokenCount::find()
-            ->where(['user_id' => $user->id, 'date' => date('Y-m-d')])
-            ->one();
-
-        if (is_null($tokenCount)) throw new ForbiddenHttpException('Queue empty');
 
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
+            // End previous token
+            if (!is_null($previousQueue)) {
+                $previousQueue->status = QueueManager::STATUS_ENDED;
+                $previousQueue->end_time = date('h:i:s');
+
+                if (!$previousQueue->save()) throw new CannotSaveException($previousQueue, 'Failed');
+            }
+
+            if (is_null($queue)) {
+                $transaction->commit();
+
+                Yii::$app->response->statusCode = 204;
+                return $this->asJson([]);
+            }
+
+            $queue->user_id = $user->id;
             $queue->status = QueueManager::STATUS_CALLED;
             $queue->call_time = date('h:i:s');
 
             if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
 
-            $tokenCount->served += 1;
-            $tokenCount->last_id = $queue->id;
+            $userTokenCount->served += 1;
+            $userTokenCount->last_id = $queue->id;
 
-            if (!$tokenCount->save()) throw new CannotSaveException($tokenCount, 'Failed');
+            if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'Failed');
 
             $transaction->commit();
         } catch (\Exception $e) {
@@ -397,7 +424,7 @@ class QueuesController extends _MainController
                 'room_id' => Yii::$app->user->identity->room_id,
                 'date' => $today
             ])->sum('served');
-        
+
         $count = RoleTokenCount::find()
             ->where([
                 'role_id' => Yii::$app->user->identity->role_id,
@@ -405,7 +432,7 @@ class QueuesController extends _MainController
                 'date' => $today
             ])
             ->sum('count');
-        
+
         $this->response->format = Response::FORMAT_RAW;
 
         if ($count - $served) return true;
