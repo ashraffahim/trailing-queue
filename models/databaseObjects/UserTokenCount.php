@@ -12,10 +12,8 @@ use Yii;
  * @property int $room_id
  * @property int $user_id
  * @property int|null $served
- * @property int|null $last_id
  * @property string $date
  *
- * @property Queue $last
  * @property Role $role
  * @property Room $room
  * @property User $user
@@ -37,9 +35,8 @@ class UserTokenCount extends \yii\db\ActiveRecord
     {
         return [
             [['role_id', 'room_id', 'user_id', 'date'], 'required'],
-            [['role_id', 'room_id', 'user_id', 'served', 'last_id'], 'integer'],
+            [['role_id', 'room_id', 'user_id', 'served'], 'integer'],
             [['date'], 'safe'],
-            [['last_id'], 'exist', 'skipOnError' => true, 'targetClass' => Queue::class, 'targetAttribute' => ['last_id' => 'id']],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
             [['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => Room::class, 'targetAttribute' => ['room_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
@@ -57,19 +54,8 @@ class UserTokenCount extends \yii\db\ActiveRecord
             'room_id' => 'Room ID',
             'user_id' => 'User ID',
             'served' => 'Served',
-            'last_id' => 'Last ID',
             'date' => 'Date',
         ];
-    }
-
-    /**
-     * Gets query for [[Last]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLast()
-    {
-        return $this->hasOne(Queue::class, ['id' => 'last_id']);
     }
 
     /**

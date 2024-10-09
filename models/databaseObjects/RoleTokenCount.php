@@ -12,7 +12,6 @@ use Yii;
  * @property int $room_id
  * @property int $count
  * @property int|null $priority_count
- * @property int|null $last_id
  * @property string $date
  *
  * @property Role $role
@@ -35,7 +34,7 @@ class RoleTokenCount extends \yii\db\ActiveRecord
     {
         return [
             [['role_id', 'room_id', 'count', 'date'], 'required'],
-            [['role_id', 'room_id', 'count', 'priority_count', 'last_id'], 'integer'],
+            [['role_id', 'room_id', 'count', 'priority_count'], 'integer'],
             [['date'], 'safe'],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
             [['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => Room::class, 'targetAttribute' => ['room_id' => 'id']],
@@ -53,7 +52,6 @@ class RoleTokenCount extends \yii\db\ActiveRecord
             'room_id' => 'Room ID',
             'count' => 'Count',
             'priority_count' => 'Priority Count',
-            'last_id' => 'Last ID',
             'date' => 'Date',
         ];
     }

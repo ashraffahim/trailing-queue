@@ -170,6 +170,7 @@ class QueuesController extends _MainController
             ->where([
                 'and',
                 ['!=', 'id', Yii::$app->user->identity->role_id],
+                ['priority_for_id' => null],
                 ['is_open' => true],
                 ['is_kiosk_visible' => false]
             ])
@@ -228,7 +229,7 @@ class QueuesController extends _MainController
             ->one();
 
         $queue = null;
-        
+
         if (!is_null($regularQueue)) {
             $priorityQueue = Queue::find()
                 ->where([
@@ -273,7 +274,6 @@ class QueuesController extends _MainController
             if (!$queue->save()) throw new CannotSaveException($queue, 'Failed');
 
             $userTokenCount->served += 1;
-            $userTokenCount->last_id = $queue->id;
 
             if (!$userTokenCount->save()) throw new CannotSaveException($userTokenCount, 'Failed');
 
@@ -331,8 +331,7 @@ class QueuesController extends _MainController
             'status' => [
                 QueueManager::STATUS_CALLED,
                 QueueManager::STATUS_RECALLED,
-                QueueManager::STATUS_IN_PROGRESS,
-                QueueManager::STATUS_ON_HOLD
+                QueueManager::STATUS_IN_PROGRESS
             ]
         ]);
 
@@ -344,62 +343,59 @@ class QueuesController extends _MainController
         if (is_null($role)) throw new NotFoundHttpException('Unknown service');
 
         /** @var \app\models\databaseObjects\User[] $users */
-        $users = $role->users;
-        // ->andWhere(['is_open' => true])
+        $users = User::find()->where([
+            'role_id' => $role->id,
+            'is_active' => true
+        ])->all();
 
-        if (empty($users)) throw new NotFoundHttpException('All counters closed');
+        if (empty($users)) throw new NotFoundHttpException('No servers appointed');
 
-        $userIds = array_map(function ($user) {
-            return $user->id;
-        }, $users);
+        $isPriority = false;
+        if (!is_null($currentQueue->priority_id)) {
+            $isPriority = true;
+        }
 
-        /** @var UserTokenCount $allUserTokenCount */
-        $allUserTokenCount = UserTokenCount::find()
-            ->where(['user_id' => $userIds, 'date' => date('Y-m-d')])
-            ->select(['*', '(`count` - `served`) AS `in_queue`'])
-            ->orderBy(['in_queue' => SORT_ASC])
-            ->all();
+        $today = date('Y-m-d');
+
+        $roleTokenCounts = RoleTokenCount::find()->where(['role_id' => $role->id, 'date' => $today])->all();
 
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
-
-            if (empty($allUserTokenCount)) {
-                foreach ($userIds as $userId) {
-                    $newUserTokenCount = new UserTokenCount();
-                    $newUserTokenCount->user_id = $userId;
-                    $newUserTokenCount->count = 0;
-                    $newUserTokenCount->served = 0;
-                    $newUserTokenCount->date = date('Y-m-d');
-
-                    if (!$newUserTokenCount->save()) throw new CannotSaveException($newUserTokenCount, 'Failed');
-                }
-
-                $tokenCount = $newUserTokenCount;
-            } else $tokenCount = $allUserTokenCount[0];
-
-            $roleUserTokenCount = 1;
-
-            foreach ($allUserTokenCount as $summingUserTokenCount) {
-                $roleUserTokenCount += $summingUserTokenCount->count;
+            // Initialize token counter
+            if (empty($roleTokenCounts)) {
+                $roleTokenCount = $this->initializeRoleTokenCount($users, $today);
+            } else {
+                $roleTokenCount = $this->findMinTokenAssignedRoom($roleTokenCounts, $role->id, $today);
             }
 
             $currentQueue->status = QueueManager::STATUS_ENDED;
             $currentQueue->end_time = date('h:i:s');
 
-            if (!$currentQueue->save()) throw new CannotSaveException($currentQueue, 'Failed');
-
-            $tokenCount->count += 1;
-
-            if (!$tokenCount->save()) throw new CannotSaveException($tokenCount, 'Failed');
-
+            // Create token
             $newQueue = new Queue();
             $newQueue->token = $token;
-            $newQueue->user_id = $tokenCount->user_id;
-            $newQueue->date = date('Y-m-d');
+            $newQueue->role_id = $role->id;
+            $newQueue->room_id = $roleTokenCount->room_id;
+            $newQueue->date = $today;
             $newQueue->time = date('h:i:s');
             $newQueue->trail_id = $currentQueue->id;
             $newQueue->status = QueueManager::STATUS_CREATED;
+
+            $currentToken = $this->getCurrentTokenOfRoom($role->id, $roleTokenCount->room_id, $today);
+
+            $roleTokenCount->count += 1;
+
+            if ($isPriority) {
+                if (!is_null($currentToken))
+                    $newQueue->priority_id = $this->getPriorityTokenShadowId($role->id, $currentToken->id, $today);
+
+                $roleTokenCount->priority_count += 1;
+            }
+
+            if (!$currentQueue->save()) throw new CannotSaveException($currentQueue, 'Failed');
+
+            if (!$roleTokenCount->save()) throw new CannotSaveException($roleTokenCount, 'Failed');
 
             if (!$newQueue->save()) throw new CannotSaveException($newQueue, 'Failed');
 
