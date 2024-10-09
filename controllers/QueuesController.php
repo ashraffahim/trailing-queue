@@ -183,7 +183,6 @@ class QueuesController extends _MainController
 
         $this->layout = 'blank-blue-gradient';
         return $this->render('call', [
-            'openCloseText' => Yii::$app->user->identity->is_open ? 'Close' : 'Open',
             'forwardRoles' => $rolesArray
         ]);
     }
@@ -383,45 +382,6 @@ class QueuesController extends _MainController
     }
 
     public function actionCallToken($token) {}
-
-    /**
-     * Redundant method
-     * @deprecated
-     */
-    public function actionOpenClose()
-    {
-        $this->response->format = Response::FORMAT_RAW;
-
-        if (!Util::isFetchRequest()) throw new NotFoundHttpException();
-
-        $user = Yii::$app->user->identity;
-
-        $tokenCount = UserTokenCount::findOne(['user_id' => $user->id, 'date' => date('Y-m-d')]);
-
-        $transaction = Yii::$app->db->beginTransaction();
-
-        try {
-            $user->is_open = !$user->is_open;
-
-            if (!$user->save()) throw new CannotSaveException($user, 'Failed');
-
-            if (is_null($tokenCount)) {
-                $tokenCount = new UserTokenCount();
-                $tokenCount->user_id = $user->id;
-                $tokenCount->count = 0;
-                $tokenCount->served = 0;
-                $tokenCount->date = date('Y-m-d');
-
-                if (!$tokenCount->save()) throw new CannotSaveException($tokenCount, 'failed');
-            }
-
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollBack();
-        }
-
-        return $user->is_open ? 'Close' : 'Open';
-    }
 
     public function actionNewTokenInQueue()
     {

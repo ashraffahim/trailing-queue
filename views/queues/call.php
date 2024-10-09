@@ -1,7 +1,6 @@
 <?php
 
 /** @var array $forwardRoles */
-/** @var string $openCloseText */
 
 use app\assets\CallAsset;
 
@@ -15,7 +14,7 @@ CallAsset::register($this);
                 <button id="next-token" class="flex justify-center items-center h-28 text-5xl w-1/2 bg-emerald-400">NEXT</button>
             </div>
             <div class="flex w-full">
-                <button id="start-stop-service" class="flex justify-center items-center h-16 flex-auto bg-lime-100"><?= $openCloseText ?></button>
+                <button id="call-token" class="flex justify-center items-center h-16 flex-auto bg-lime-100">Call token</button>
                 <button id="recall" class="flex justify-center items-center h-16 flex-auto bg-amber-100">Recall</button>
                 <button id="forward-token" class="flex justify-center items-center h-16 flex-auto bg-cyan-100">Forward</button>
             </div>

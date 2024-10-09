@@ -1,7 +1,6 @@
 const fetchUrl = {
     currentToken: '/queues/current-token',
     forward: '/queues/forward',
-    openClose: '/queues/open-close',
     callNext: '/queues/call-next',
     recall: '/queues/recall',
     newTokenInQueue: '/queues/new-token-in-queue',
@@ -11,7 +10,6 @@ let currentToken = null;
 
 const forwardTokenButtonElement = $('#forward-token');
 const hideForwardModalButtonElement = $('#hide-forward-modal');
-const startStopServiceButtonElement = $('#start-stop-service');
 const nextTokenButtonElement = $('#next-token');
 const recallButtonElement = $('#recall');
 
@@ -135,25 +133,6 @@ forwardTokenButtonElement.on('click', () => {
 
 forwardModalBackdropElement.on('click', () => { forwardModalElement.addClass('hidden') });
 hideForwardModalButtonElement.on('click', () => { forwardModalElement.addClass('hidden') });
-
-startStopServiceButtonElement.on('click', async () => {
-    const headers = new Headers();
-    headers.append('X-Requested-With', 'fetch');
-
-    const response = await fetch(fetchUrl.openClose, {
-        headers,
-        method: 'get',
-    });
-
-    if (!response.ok) {
-        window.alert('Failed');
-        return;
-    }
-
-    const responseData = await response.text();
-
-    startStopServiceButtonElement.text(responseData);
-});
 
 recallButtonElement.on('click', async () => {
     const headers = new Headers();
