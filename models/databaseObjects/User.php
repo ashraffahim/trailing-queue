@@ -21,7 +21,7 @@ use Yii;
  * @property Queue[] $queues
  * @property Role $role
  * @property Room $room
- * @property UserTokenCount[] $tokenCounts
+ * @property UserTokenCount[] $userTokenCounts
  */
 class User extends \yii\db\ActiveRecord
 {
