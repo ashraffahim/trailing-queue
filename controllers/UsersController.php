@@ -96,7 +96,12 @@ class UsersController extends _MainController
         }
 
         $rooms = Room::find()->all();
-        $roles = Role::find()->where(['!=', 'task', 0])->all();
+        $roles = Role::find()->where([
+            'and',
+            ['!=', 'task', 0],
+            ['is_open' => true],
+            ['priority_for_id' => null]
+        ])->all();
 
         return $this->render('create', [
             'model' => $model,
@@ -134,7 +139,12 @@ class UsersController extends _MainController
         }
 
         $rooms = Room::find()->all();
-        $roles = Role::find()->where(['!=', 'task', 0])->all();
+        $roles = Role::find()->where([
+            'and',
+            ['!=', 'task', 0],
+            ['is_open' => true],
+            ['priority_for_id' => null]
+        ])->all();
 
         return $this->render('update', [
             'model' => $model,

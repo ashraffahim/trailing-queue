@@ -50,7 +50,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a($model->user->first_name . ' ' . $model->user->last_name, '/reports/summary/' . $model->user_id . '/' . $model->date, ['class' => 'underline hover:text-emerald-300']);
                     }
                 ],
-                'count',
                 'served',
                 [
                     'label' => 'Date',

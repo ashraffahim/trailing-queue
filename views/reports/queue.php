@@ -52,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'label' => 'Name',
                     'value' => function(Queue $model) {
+                        if (is_null($model->user)) return '';
                         return $model->user->first_name . ' ' . $model->user->last_name;
                     }
                 ],
