@@ -200,7 +200,10 @@ class QueuesController extends _MainController
             ->where(['user_id' => $user->id, 'date' => $today])
             ->one();
 
-        if (is_null($userTokenCount)) throw new ForbiddenHttpException('Queue empty');
+        if (is_null($userTokenCount)) {
+            Yii::$app->response->statusCode = 204;
+            return $this->asJson([]);
+        }
 
         /** @var Queue $previousQueue */
         $previousQueue = Queue::find()
