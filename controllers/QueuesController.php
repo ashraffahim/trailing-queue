@@ -8,6 +8,7 @@ use app\models\databaseObjects\Queue;
 use app\controllers\_MainController;
 use app\models\databaseObjects\Role;
 use app\models\databaseObjects\RoleTokenCount;
+use app\models\databaseObjects\Room;
 use app\models\databaseObjects\User;
 use app\models\databaseObjects\UserTokenCount;
 use app\models\exceptions\common\CannotSaveException;
@@ -407,7 +408,7 @@ class QueuesController extends _MainController
         }
     }
 
-    public function actionCallToken($token) {}
+    // public function actionCallToken($token) {}
 
     public function actionNewTokenInQueue()
     {
@@ -442,7 +443,7 @@ class QueuesController extends _MainController
     public function actionMonitor()
     {
         /** @var Role[] $roles */
-        $roles = Role::find()->where(['is_open' => true])->all();
+        $roles = Role::find()->where(['is_open' => true, 'priority_for_id' => null])->all();
 
         $roleArray = [];
 
@@ -474,27 +475,22 @@ class QueuesController extends _MainController
 
         $this->response->format = Response::FORMAT_JSON;
 
-        $users = User::find()->all();
+        /** @var Room[] $rooms */
+        $rooms = Room::find()->all();
 
-        $userIds = [];
+        $roomIdToRoom = [];
 
-        $userIdToRoleId = [];
-
-        foreach ($users as $user) {
-            $userIdToRoleId[$user->id] = [
-                'role' => $user->role_id,
-                'floor' => $user->room->floor,
-                'room' => $user->room->name,
+        foreach ($rooms as $room) {
+            $roomIdToRoom[$room->id] = [
+                'floor' => $room->floor,
+                'room' => $room->name,
             ];
-
-            $userIds[] = $user->id;
         }
 
         /** @var Queue[] $tokens */
         $tokens = Queue::find()
             ->where([
                 'and',
-                ['in', 'user_id', $userIds],
                 ['>', 'id', $lastLoadedId],
                 ['=', 'date', date('Y-m-d')],
                 [
@@ -519,7 +515,6 @@ class QueuesController extends _MainController
             $updatedTokens = Queue::find()
                 ->where([
                     'and',
-                    ['in', 'user_id', $userIds],
                     ['>=', 'id', $firstLoadedId],
                     ['=', 'date', date('Y-m-d')],
                     [
@@ -540,8 +535,8 @@ class QueuesController extends _MainController
                         $called[] = [
                             'id' => $updatedToken->id,
                             'token' => $updatedToken->token,
-                            'room' => $userIdToRoleId[$updatedToken->user_id]['room'],
-                            'floor' => $userIdToRoleId[$updatedToken->user_id]['floor'],
+                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'],
+                            'floor' => $roomIdToRoom[$updatedToken->room_id]['floor'],
                         ];
                         break;
                     case QueueManager::STATUS_RECALLED:
@@ -549,8 +544,8 @@ class QueuesController extends _MainController
                             'id' => $updatedToken->id,
                             'token' => $updatedToken->token,
                             'recall_count' => $updatedToken->recall_count,
-                            'room' => $userIdToRoleId[$updatedToken->user_id]['room'],
-                            'floor' => $userIdToRoleId[$updatedToken->user_id]['floor'],
+                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'],
+                            'floor' => $roomIdToRoom[$updatedToken->room_id]['floor'],
                         ];
                         break;
                     case QueueManager::STATUS_ENDED:
@@ -566,11 +561,9 @@ class QueuesController extends _MainController
             $queue[] = [
                 'id' => $token->id,
                 'token' => $token->token,
-                'role_id' => $userIdToRoleId[$token->user_id]['role'],
-                'floor' => $userIdToRoleId[$token->user_id]['floor'],
-                'room' => $userIdToRoleId[$token->user_id]['room'],
-                'date' => $token->date,
-                'time' => $token->time,
+                'role_id' => $token->role_id,
+                'floor' => $roomIdToRoom[$token->room_id]['floor'],
+                'room' => $roomIdToRoom[$token->room_id]['room'],
                 'status' => $token->status,
                 'recall_count' => $token->recall_count,
             ];

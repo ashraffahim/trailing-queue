@@ -1,10 +1,13 @@
-let queues = [null, null, null];
+let upcomingTokenRole = null;
 let lastLoadedId = 0;
 let firstLoadedId = 0;
 let calledTokens = [];
 let endedTokens = [];
 let recalledTokens = {};
 let adElements = [];
+let roleColumnElements = [];
+
+const upcomingTokenColumnCount = 3;
 
 const fixedAds = [
     '/images/bangladesh-embassy-ad.png',
@@ -27,20 +30,26 @@ const roleModalElement = $('#role-modal');
 
 const startButtonElement = $('<button class="text-lg">START</button>');
 
-queues.forEach((num, index) => {
+$(document).ready(function () {
     const select = $('<select class="text-lg"></select>');
 
     window.queueRoles.forEach(role => {
         select.append('<option value="' + role.id + '">' + role.name + '</option>');
     });
 
-    queues[index] = window.queueRoles[0].id;
+    upcomingTokenRole = window.queueRoles[0].id;
 
     select.change('click', () => {
-        queues[index] = select.val();
+        upcomingTokenRole = select.val();
     });
 
     roleSelectElement.append(select);
+    
+    roleSelectElement.append(startButtonElement);
+    
+    if (!('speechSynthesis' in window)) {
+        alert('Your browser is not supported. If google chrome, please upgrade!!');
+    }
 });
 
 queueContainerElement.prepend(`
@@ -58,7 +67,7 @@ fixedAds.forEach((fixedAd, index) => {
     embassySlideLogoImageElement.style.maxWidth = '100%';
     embassySlideLogoImageElement.style.maxHeight = '100%';
     if (index > 0) embassySlideLogoImageElement.classList.add('hidden');
-    
+
     adElements.push(embassySlideLogoImageElement);
     adsElement.append(embassySlideLogoImageElement);
 });
@@ -66,7 +75,7 @@ fixedAds.forEach((fixedAd, index) => {
 window.ads.forEach(ad => {
     const adNameParts = ad.split('.');
     const adExt = adNameParts[adNameParts.length - 1].toLowerCase();
- 
+
     if (imageExtentions.includes(adExt)) {
         const image = new Image();
         image.src = ad;
@@ -81,7 +90,7 @@ window.ads.forEach(ad => {
         const video = $('<video></video>');
         video.attr('src', ad);
         video.addClass('hidden');
-        
+
         adElements.push(video[0]);
         adsElement.append(video);
     }
@@ -90,30 +99,27 @@ window.ads.forEach(ad => {
 startButtonElement.on('click', () => {
     roleModalElement.addClass('hidden');
 
-    queues.forEach(role => {
-        roleColumnsElement.append(`
-            <div id="role-column-${role}" class="flex flex-col flex-auto min-h-screen border border-emerald-100">
-                <div class="role-column-header flex p-3 text-white" style="background-color: #069;">
-                    <div class="text-lg w-1/3">Token</div>
-                    <div class="text-lg w-1/3">Floor</div>
-                    <div class="text-lg w-1/3">Room</div>
-                </div>
-                <div class="role-column-data">
-                </div>
-            </div>
-        `);
-    });
+    for (let i = 0; i < upcomingTokenColumnCount; i++) {
+        roleColumnElements.push(
+            $('<div id="role-column-' + i + '" class="flex flex-col flex-auto min-h-screen border border-emerald-100"></div>')
+        );
+        
+        roleColumnElements[i].append(
+            '<div class="role-column-header flex p-3 text-white" style="background-color: #069;">'
+                + '<div class="text-lg w-1/3">Token</div>'
+                + '<div class="text-lg w-1/3">Floor</div>'
+                + '<div class="text-lg w-1/3">Room</div>'
+            + '</div>'
+            + '<div class="role-column-data">'
+            + '</div>'
+        );
+
+        roleColumnsElement.append(roleColumnElements[i]);
+    }
 
     startMonitor();
     startAdsSlide();
 });
-
-
-roleSelectElement.append(startButtonElement);
-
-if (!('speechSynthesis' in window)) {
-    alert('Your browser is not supported. If google chrome, please upgrade!!');
-}
 
 const startMonitor = () => {
     const headers = new Headers();
@@ -267,7 +273,7 @@ const textToSpeech = speak => {
 
 const insertNewRowInQueue = (token) => {
     const row = $(`<div data-id="${token.id}" class="text-3xl font-bold row-in-queue new-row-in-queue"></div>`);
-    
+
     row.append(`
         <div class="w-1/3">${token.token}</div>
         <div class="w-1/3">${token.floor}</div>
@@ -281,8 +287,17 @@ const insertNewRowInQueue = (token) => {
     }, 4000);
 }
 
-const insertUpcomingRowInQueue = (queue) => {
-    $(`#role-column-${queue.role_id}`).append(`
+const insertUpcomingRowInQueue = queue => {
+    let childCount = [];
+
+    roleColumnElements.forEach(col => {
+        childCount.push(col.children().length);
+    });
+
+    let minChildCount = Math.min(...childCount);
+    let minChildParentIndex = childCount.indexOf(minChildCount);
+
+    $(`#role-column-${minChildParentIndex}`).append(`
         <div data-id="${queue.id}" class="text-lg row-in-queue">
             <div class="w-1/3">${queue.token}</div>
             <div class="w-1/3">${queue.floor}</div>
@@ -293,8 +308,10 @@ const insertUpcomingRowInQueue = (queue) => {
 
 const highlightRecall = id => {
     const row = $(`[data-id="${id}"]`).addClass('new-row-in-queue');
-    
+
     setTimeout(() => {
         row.removeClass('new-row-in-queue');
     }, 4000);
 }
+
+const rearrangeUpcomingTokens = () => { }
