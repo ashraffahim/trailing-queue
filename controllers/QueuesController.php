@@ -640,8 +640,6 @@ class QueuesController extends _MainController
         foreach ($roleTokenCounts as $roleTokenCount) {
             if ($minTokenRoomId === $roleTokenCount->room_id) return $roleTokenCount;
         }
-
-        return null;
     }
 
     private function getCurrentTokenOfRoom(int $roleId, int $roomId, string $date): ?Queue
