@@ -56,6 +56,8 @@ $this->registerJs('selectClassic()');
                 </div>
             </div>
 
+            <?= $form->field($model, 'is_open')->checkbox() ?>
+
             <?= $form->field($model, 'is_kiosk_visible')->checkbox() ?>
         </div>
 
