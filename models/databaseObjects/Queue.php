@@ -48,7 +48,6 @@ class Queue extends \yii\db\ActiveRecord
             [['role_id', 'room_id', 'user_id', 'priority_id', 'trail_id', 'status', 'recall_count'], 'integer'],
             [['date', 'time', 'call_time', 'recall_time', 'end_time'], 'safe'],
             [['token'], 'string', 'max' => 8],
-            [['priority_id'], 'unique'],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
             [['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => Room::class, 'targetAttribute' => ['room_id' => 'id']],
             [['trail_id'], 'exist', 'skipOnError' => true, 'targetClass' => Queue::class, 'targetAttribute' => ['trail_id' => 'id']],
