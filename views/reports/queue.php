@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value' => function(Queue $model) {
                         if (is_null($model->trail_id)) return '';
 
-                        return $model->trail->user->first_name . ' ' . $model->trail->user->last_name . ' (#' . $model->trail_id . ')';
+                        return $model->trail->user->first_name . ' ' . $model->trail->user->last_name;
                     }
                 ],
                 [
