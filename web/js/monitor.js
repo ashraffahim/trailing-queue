@@ -23,6 +23,7 @@ const fetchUrl = {
 const roleSelectElement = $('#role-select');
 const roleColumnsElement = $('#role-columns');
 const queueContainerElement = $('#queue-container');
+const queueExtraContainerElement = $('#queue-extra-container');
 const queueElement = $('#queue');
 const adsElement = $('#ads');
 
@@ -57,6 +58,12 @@ queueContainerElement.prepend(`
         <div class="text-4xl w-1/3">Token</div>
         <div class="text-4xl w-1/3">Floor</div>
         <div class="text-4xl w-1/3">Count/Room</div>
+    </div>
+`);
+
+queueExtraContainerElement.prepend(`
+    <div class="flex p-3 text-white" style="background-color: #069;">
+        <div class="text-4xl uppercase font-bold text-center w-full">Consulate General of Bangladesh, Dubai</div>
     </div>
 `);
 
@@ -164,7 +171,7 @@ const startMonitor = () => {
                         insertNewRowInQueue(queue);
                         textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room.split('').join(', '));
                     } else {
-                        insertUpcomingRowInQueue(queue);
+                        if (queue.role_id === upcomingTokenRole) insertUpcomingRowInQueue(queue);
                     }
                 } catch (e) {
                     console.log(e);
