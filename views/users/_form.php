@@ -66,6 +66,8 @@ $this->registerJs('selectClassic()');
                 </div>
             </div>
 
+            <?= $form->field($model, 'desk')->textInput(['maxlength' => true, 'class' => 'input-classic sm:max-w-80']) ?>
+
             <?= $form->field($model, 'is_active')->checkbox() ?>
 
             <?php $model->password_hash = ''; ?>

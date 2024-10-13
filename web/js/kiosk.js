@@ -34,7 +34,7 @@ window.tokenRoles.forEach(role => {
 
         sendPrintRequest([
             { size: 24.0, text: responseData.token },
-            { size: 12.0, text: 'Floor - ' + responseData.floor + ', Room - ' + responseData.room },
+            { size: 12.0, text: 'Level - ' + responseData.floor + ', Room - ' + responseData.room },
             { size: 12.0, text: responseData.date + ' ' + responseData.time },
             { size: 10.0, text: (responseData.currentToken != null ? ("Now serving " + responseData.currentToken) : "") },
             { size: 10.0, text: "Please take a seat" },
@@ -48,7 +48,7 @@ window.tokenRoles.forEach(role => {
         tokenPrintElement.append(`
             <button id="hide-token-modal" class="relative flex justify-center items-center w-full text-red-600 rounded-md">Close</button>
             <div class="text-6xl font-black">${responseData.token}</div>
-            <div class="text-lg">Floor - ${responseData.floor}, Room - ${responseData.room}</div>
+            <div class="text-lg">Level - ${responseData.floor}, Room - ${responseData.room}</div>
             <div class="text-sm">${responseData.date} ${responseData.time}</div>
         `);
 

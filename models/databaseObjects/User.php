@@ -15,6 +15,7 @@ use Yii;
  * @property string|null $last_name
  * @property int $room_id
  * @property int $role_id
+ * @property string|null $desk
  * @property bool|null $is_active
  * @property string|null $auth_key
  *
@@ -46,6 +47,7 @@ class User extends \yii\db\ActiveRecord
             [['email'], 'string', 'max' => 200],
             [['password_hash'], 'string', 'max' => 255],
             [['first_name', 'last_name'], 'string', 'max' => 20],
+            [['desk'], 'string', 'max' => 10],
             [['auth_key'], 'string', 'max' => 50],
             [['username'], 'unique'],
             [['email'], 'unique'],
@@ -69,6 +71,7 @@ class User extends \yii\db\ActiveRecord
             'last_name' => 'Last Name',
             'room_id' => 'Room ID',
             'role_id' => 'Role ID',
+            'desk' => 'Desk',
             'is_active' => 'Is Active',
             'auth_key' => 'Auth Key',
         ];

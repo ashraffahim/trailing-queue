@@ -471,7 +471,7 @@ class QueuesController extends _MainController
 
     public function actionMonitorSocket($lastLoadedId, $firstLoadedId)
     {
-        Yii::$app->log->targets[0]->enabled = false;
+        // Yii::$app->log->targets[0]->enabled = false;
 
         $this->response->format = Response::FORMAT_JSON;
 
@@ -535,7 +535,7 @@ class QueuesController extends _MainController
                         $called[] = [
                             'id' => $updatedToken->id,
                             'token' => $updatedToken->token,
-                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'],
+                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'] . ' - ' . (!is_null($updatedToken->user) ? $updatedToken->user->desk : ''),
                             'floor' => $roomIdToRoom[$updatedToken->room_id]['floor'],
                         ];
                         break;
@@ -544,7 +544,7 @@ class QueuesController extends _MainController
                             'id' => $updatedToken->id,
                             'token' => $updatedToken->token,
                             'recall_count' => $updatedToken->recall_count,
-                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'],
+                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'] . ' - ' . (!is_null($updatedToken->user) ? $updatedToken->user->desk : ''),
                             'floor' => $roomIdToRoom[$updatedToken->room_id]['floor'],
                         ];
                         break;
@@ -563,7 +563,7 @@ class QueuesController extends _MainController
                 'token' => $token->token,
                 'role_id' => $token->role_id,
                 'floor' => $roomIdToRoom[$token->room_id]['floor'],
-                'room' => $roomIdToRoom[$token->room_id]['room'],
+                'room' => $roomIdToRoom[$token->room_id]['room'] . ' - ' . (!is_null($token->user) ? $token->user->desk : ''),
                 'status' => $token->status,
                 'recall_count' => $token->recall_count,
             ];

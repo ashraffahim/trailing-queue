@@ -56,7 +56,7 @@ $(document).ready(function () {
 queueContainerElement.prepend(`
     <div class="flex p-3 text-white" style="background-color: #069;">
         <div class="text-4xl w-1/3">Token</div>
-        <div class="text-4xl w-1/3">Floor</div>
+        <div class="text-4xl w-1/3">Level</div>
         <div class="text-4xl w-1/3">Count/Room</div>
     </div>
 `);
@@ -114,7 +114,7 @@ startButtonElement.on('click', () => {
         roleColumnElements[i].append(
             '<div class="role-column-header flex p-3 text-white" style="background-color: #069;">'
                 + '<div class="text-lg w-1/3">Token</div>'
-                + '<div class="text-lg w-1/3">Floor</div>'
+                + '<div class="text-lg w-1/3">Level</div>'
                 + '<div class="text-lg w-1/3">Room</div>'
             + '</div>'
             + '<div class="role-column-data">'

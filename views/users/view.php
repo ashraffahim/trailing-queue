@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'last_name',
                     'username',
                     'email:email',
-                    ['label' => 'Floor', 'value' => function($model) { return $model->room->floor; }],
+                    ['label' => 'Level', 'value' => function($model) { return $model->room->floor; }],
                     ['label' => 'Room', 'value' => function($model) { return $model->room->name; }],
                     'is_active:boolean',
                 ],
