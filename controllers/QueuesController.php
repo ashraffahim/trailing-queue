@@ -678,6 +678,6 @@ class QueuesController extends _MainController
             ->andWhere(['status' => QueueManager::STATUS_CREATED])
             ->count();
 
-        return $currentTokenId + (2 * ($priorityUncalledTokenCount + 1));
+        return $currentTokenId + $priorityUncalledTokenCount + 1;
     }
 }
