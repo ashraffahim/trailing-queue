@@ -1440,6 +1440,10 @@ input[type="number"]::-webkit-outer-spin-button,
   height: 60vh;
 }
 
+.h-\[72px\] {
+  height: 72px;
+}
+
 .h-full {
   height: 100%;
 }
@@ -1711,6 +1715,11 @@ input[type="number"]::-webkit-outer-spin-button,
 .bg-lime-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(236 252 203 / var(--tw-bg-opacity));
+}
+
+.bg-lime-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(190 242 100 / var(--tw-bg-opacity));
 }
 
 .bg-red-200 {

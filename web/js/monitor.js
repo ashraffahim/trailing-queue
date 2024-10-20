@@ -54,7 +54,7 @@ $(document).ready(function () {
 });
 
 queueContainerElement.prepend(`
-    <div class="flex p-3 text-white" style="background-color: #069;">
+    <div class="flex items-center h-[72px] text-white" style="background-color: #069;">
         <div class="text-4xl w-1/3">Token</div>
         <div class="text-4xl w-1/3">Level</div>
         <div class="text-4xl w-1/3">Count/Room</div>
@@ -62,8 +62,11 @@ queueContainerElement.prepend(`
 `);
 
 queueExtraContainerElement.prepend(`
-    <div class="flex p-3 text-white" style="background-color: #069;">
-        <div class="text-4xl uppercase font-bold text-center w-full">Consulate General of Bangladesh, Dubai</div>
+    <div class="flex text-white" style="background-color: #069;">
+        <div class="w-full h-[72px] flex">
+            <img src="/images/bangladesh-embassy-logo.jpg" class="h-[72px]">
+            <div class="text-5xl uppercase font-bold text-center p-3">Consulate General of Bangladesh, Dubai</div>
+        </div>
     </div>
 `);
 
