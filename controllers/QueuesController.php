@@ -435,9 +435,9 @@ class QueuesController extends _MainController
 
         $this->response->format = Response::FORMAT_RAW;
 
-        if ($count - $served) return true;
+        if ($count - $served > 0) return 1;
 
-        return false;
+        return 0;
     }
 
     public function actionMonitor()
@@ -471,7 +471,7 @@ class QueuesController extends _MainController
 
     public function actionMonitorSocket($lastLoadedId, $firstLoadedId)
     {
-        // Yii::$app->log->targets[0]->enabled = false;
+        Yii::$app->log->targets[0]->enabled = false;
 
         $this->response->format = Response::FORMAT_JSON;
 
@@ -535,7 +535,7 @@ class QueuesController extends _MainController
                         $called[] = [
                             'id' => $updatedToken->id,
                             'token' => $updatedToken->token,
-                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'] . ' - ' . (!is_null($updatedToken->user) ? $updatedToken->user->desk : ''),
+                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'] . ' ' . (!is_null($updatedToken->user) ? $updatedToken->user->desk : ''),
                             'floor' => $roomIdToRoom[$updatedToken->room_id]['floor'],
                         ];
                         break;
@@ -544,7 +544,7 @@ class QueuesController extends _MainController
                             'id' => $updatedToken->id,
                             'token' => $updatedToken->token,
                             'recall_count' => $updatedToken->recall_count,
-                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'] . ' - ' . (!is_null($updatedToken->user) ? $updatedToken->user->desk : ''),
+                            'room' => $roomIdToRoom[$updatedToken->room_id]['room'] . ' ' . (!is_null($updatedToken->user) ? $updatedToken->user->desk : ''),
                             'floor' => $roomIdToRoom[$updatedToken->room_id]['floor'],
                         ];
                         break;

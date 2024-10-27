@@ -14,7 +14,7 @@ KioskAsset::register($this);
 <div class="queues-kiosk">
     <div class="flex flex-col justify-center items-center py-3 min-h-screen">
         <div class="flex flex-col justify-center items-center bg-white sm:max-w-xl w-full rounded-lg">
-            <img src="/images/bangladesh-embassy-logo.jpg" alt="Bangladesh Embassy" class="h-44">
+            <img src="/images/bangladesh-gov.png" alt="Bangladesh Embassy" class="h-44">
             <div class="text-xl font-black text-emerald-600 uppercase my-3">Consulate General of Bangladesh, Dubai</div>
         </div>
         <div id="role-list" class="flex flex-col justify-center items-center w-full gap-y-3 py-3"></div>

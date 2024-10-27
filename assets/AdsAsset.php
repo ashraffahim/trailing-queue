@@ -20,7 +20,7 @@ class AdsAsset extends AssetBundle
     public $css = [];
 
     public $js = [
-        'js/ads.js?v=1725092200',
+        'js/ads.js?v=1725092201',
     ];
 
     public $jsOptions = ['position' => \yii\web\View::POS_END];

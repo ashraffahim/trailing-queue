@@ -10,7 +10,6 @@ let roleColumnElements = [];
 const upcomingTokenColumnCount = 3;
 
 const fixedAds = [
-    '/images/bangladesh-embassy-ad.png',
     '/images/amaar-clinic-ad.png',
     '/images/amc-ad.png',
 ];
@@ -41,7 +40,7 @@ $(document).ready(function () {
     upcomingTokenRole = window.queueRoles[0].id;
 
     select.change('click', () => {
-        upcomingTokenRole = select.val();
+        upcomingTokenRole = parseInt(select.val());
     });
 
     roleSelectElement.append(select);
@@ -63,9 +62,9 @@ queueContainerElement.prepend(`
 
 queueExtraContainerElement.prepend(`
     <div class="flex text-white" style="background-color: #069;">
-        <div class="w-full h-[72px] flex">
-            <img src="/images/bangladesh-embassy-logo.jpg" class="h-[72px]">
-            <div class="text-5xl uppercase font-bold text-center p-3">Consulate General of Bangladesh, Dubai</div>
+        <div class="w-full h-[72px] flex items-center">
+            <img src="/images/bangladesh-gov.png" class="h-[72px]">
+            <div class="text-2xl uppercase font-bold text-center p-3 flex-auto">Consulate General of Bangladesh, Dubai</div>
         </div>
     </div>
 `);
@@ -168,11 +167,11 @@ const startMonitor = () => {
                     if (queue.status === 1) {
                         calledTokens.push(queue.id);
                         insertNewRowInQueue(queue);
-                        textToSpeech('Token number, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room.split('').join(', '));
+                        textToSpeech('Token number, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
                     } else if (queue.status === 2) {
                         recalledTokens[queue.id] = queue.recall_count;
                         insertNewRowInQueue(queue);
-                        textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room.split('').join(', '));
+                        textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
                     } else {
                         if (queue.role_id === upcomingTokenRole) insertUpcomingRowInQueue(queue);
                     }
@@ -189,7 +188,7 @@ const startMonitor = () => {
 
                     insertNewRowInQueue(token);
 
-                    textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
+                    textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room);
 
                     roleColumnsElement.find(`[data-id="${token.id}"]`).remove();
                 }
@@ -200,7 +199,7 @@ const startMonitor = () => {
                 if (!recalledTokens.hasOwnProperty(token.id) || recalledTokens[token.id] < token.recall_count) {
                     recalledTokens[token.id] = token.recall_count;
 
-                    textToSpeech('Recalling, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room.split('').join(', '));
+                    textToSpeech('Recalling, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room);
 
                     highlightRecall(token.id);
 
