@@ -563,7 +563,7 @@ class QueuesController extends _MainController
                 'token' => $token->token,
                 'role_id' => $token->role_id,
                 'floor' => $roomIdToRoom[$token->room_id]['floor'],
-                'room' => $roomIdToRoom[$token->room_id]['room'] . ' - ' . (!is_null($token->user) ? $token->user->desk : ''),
+                'room' => $roomIdToRoom[$token->room_id]['room'] . ' ' . (!is_null($token->user) ? $token->user->desk : ''),
                 'status' => $token->status,
                 'recall_count' => $token->recall_count,
             ];
