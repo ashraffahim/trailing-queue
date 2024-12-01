@@ -8,10 +8,10 @@ use app\assets\MonitorAsset;
 MonitorAsset::register($this);
 ?>
 
-<div class="queues-monitor overflow-hidden h-screen">
+<div id="queue-monitor" class="overflow-hidden h-screen">
     <div class="flex flex-row w-full">
-        <div id="queue-container" class="w-1/2">
-            <div id="queue" class="flex flex-col flex-auto min-h-screen border border-emerald-100"></div>
+        <div id="queue-container" class="w-1/2 border border-emerald-100">
+            <div id="queue" class="flex flex-col flex-auto min-h-screen"></div>
         </div>
         <div id="queue-extra-container" class="flex flex-col w-1/2">
             <div id="ads" class="flex justify-center items-center w-full h-[60vh]"></div>

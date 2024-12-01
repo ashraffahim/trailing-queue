@@ -23,12 +23,17 @@ class ReportsController extends _MainController
     public function actionQueue() {
         $date = $this->request->get('date', date('Y-m-d'));
         $token = $this->request->get('token', '');
+        $room = $this->request->get('room', null);
 
         $queue = Queue::find()
         ->where(['date' => $date]);
         
         if ($token !== '') {
-            $queue->andWhere(['token' => $token]);
+            $queue->andWhere('token LIKE "' . $token . '"');
+        }
+        
+        if (!is_null($room)) {
+            $queue->andWhere(['room_id' => $room]);
         }
         
         $dataProvider = new ActiveDataProvider([

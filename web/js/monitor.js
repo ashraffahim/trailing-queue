@@ -21,6 +21,7 @@ const fetchUrl = {
 
 const roleSelectElement = $('#role-select');
 const roleColumnsElement = $('#role-columns');
+const queueMonitorElement = $('#queue-monitor');
 const queueContainerElement = $('#queue-container');
 const queueExtraContainerElement = $('#queue-extra-container');
 const queueElement = $('#queue');
@@ -60,11 +61,11 @@ queueContainerElement.prepend(`
     </div>
 `);
 
-queueExtraContainerElement.prepend(`
+queueMonitorElement.prepend(`
     <div class="flex text-white" style="background-color: #069;">
-        <div class="w-full h-[72px] flex items-center">
-            <img src="/images/bangladesh-gov.png" class="h-[72px]">
-            <div class="text-2xl uppercase font-bold text-center p-3 flex-auto">Consulate General of Bangladesh, Dubai</div>
+        <div class="w-full h-[72px] flex items-center justify-center text-4xl uppercase font-bold p-3">
+            <img src="/images/bangladesh-gov.png" class="h-[72px] mr-3">
+            Consulate General of Bangladesh, Dubai
         </div>
     </div>
 `);
