@@ -45,9 +45,9 @@ $(document).ready(function () {
     });
 
     roleSelectElement.append(select);
-    
+
     roleSelectElement.append(startButtonElement);
-    
+
     if (!('speechSynthesis' in window)) {
         alert('Your browser is not supported. If google chrome, please upgrade!!');
     }
@@ -113,12 +113,12 @@ startButtonElement.on('click', () => {
         roleColumnElements.push(
             $('<div id="role-column-' + i + '" class="flex flex-col flex-auto min-h-screen border border-emerald-100"></div>')
         );
-        
+
         roleColumnElements[i].append(
             '<div class="role-column-header flex p-3 text-white" style="background-color: #069;">'
-                + '<div class="text-lg w-1/3">Token</div>'
-                + '<div class="text-lg w-1/3">Level</div>'
-                + '<div class="text-lg w-1/3">Room</div>'
+            + '<div class="text-lg w-1/3">Token</div>'
+            + '<div class="text-lg w-1/3">Level</div>'
+            + '<div class="text-lg w-1/3">Room</div>'
             + '</div>'
             + '<div class="role-column-data">'
             + '</div>'
@@ -167,12 +167,16 @@ const startMonitor = () => {
                 try {
                     if (queue.status === 1) {
                         calledTokens.push(queue.id);
-                        insertNewRowInQueue(queue);
-                        textToSpeech('Token number, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
+                        setTimeout(() => {
+                            insertNewRowInQueue(queue);
+                            textToSpeech('Token number, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
+                        }, 3000);
                     } else if (queue.status === 2) {
                         recalledTokens[queue.id] = queue.recall_count;
-                        insertNewRowInQueue(queue);
-                        textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
+                        setTimeout(() => {
+                            insertNewRowInQueue(queue);
+                            textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
+                        }, 3000);
                     } else {
                         if (queue.role_id === upcomingTokenRole) insertUpcomingRowInQueue(queue);
                     }
@@ -187,11 +191,14 @@ const startMonitor = () => {
                 if (!calledTokens.includes(token.id)) {
                     calledTokens.push(token.id);
 
-                    insertNewRowInQueue(token);
+                    setTimeout(() => {
+                        insertNewRowInQueue(token);
+    
+                        textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room);
+                        
+                        roleColumnsElement.find(`[data-id="${token.id}"]`).remove();
+                    }, 3000);
 
-                    textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room);
-
-                    roleColumnsElement.find(`[data-id="${token.id}"]`).remove();
                 }
             })
         }
