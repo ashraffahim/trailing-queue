@@ -170,13 +170,13 @@ const startMonitor = () => {
                         setTimeout(() => {
                             insertNewRowInQueue(queue);
                             textToSpeech('Token number, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
-                        }, 3000);
+                        }, 2000);
                     } else if (queue.status === 2) {
                         recalledTokens[queue.id] = queue.recall_count;
                         setTimeout(() => {
                             insertNewRowInQueue(queue);
                             textToSpeech('Recalling, ' + queue.token.split('').join(', ') + ', in, counter, ' + queue.room);
-                        }, 3000);
+                        }, 2000);
                     } else {
                         if (queue.role_id === upcomingTokenRole) insertUpcomingRowInQueue(queue);
                     }
@@ -197,7 +197,7 @@ const startMonitor = () => {
                         textToSpeech('Token number, ' + token.token.split('').join(', ') + ', in, counter, ' + token.room);
                         
                         roleColumnsElement.find(`[data-id="${token.id}"]`).remove();
-                    }, 3000);
+                    }, 2000);
 
                 }
             })
