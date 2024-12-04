@@ -23,7 +23,7 @@ class SlotsAsset extends AssetBundle
     public $css = [];
 
     public $js = [
-        'js/slots-update.js?v=1725092201',
+        'js/slots-update.js?v=1725092202',
     ];
     
     public $depends = [

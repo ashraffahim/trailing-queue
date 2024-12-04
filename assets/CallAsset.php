@@ -18,7 +18,7 @@ class CallAsset extends AssetBundle
     public $css = [];
 
     public $js = [
-        'js/call.js?v=1725092201',
+        'js/call.js?v=1725092202',
     ];
 
     public $jsOptions = ['position' => \yii\web\View::POS_END];

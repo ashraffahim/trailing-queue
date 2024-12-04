@@ -23,7 +23,7 @@ class SelectClassicAsset extends AssetBundle
     public $css = [];
 
     public $js = [
-        'js/lib/select-classic.js?v=1725092201',
+        'js/lib/select-classic.js?v=1725092202',
     ];
     
     public $depends = [
