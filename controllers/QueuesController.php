@@ -488,7 +488,7 @@ class QueuesController extends _MainController
         }
 
         /** @var Queue[] $tokens */
-        $tokens = Queue::find()
+        $tokensQuery = Queue::find()
             ->where([
                 'and',
                 ['>', 'id', $lastLoadedId],
@@ -503,8 +503,13 @@ class QueuesController extends _MainController
                         QueueManager::STATUS_RECALLED,
                     ]
                 ]
-            ])
-            ->all();
+            ]);
+
+        if (isset($_GET['callOnly'])) {
+            $tokensQuery->andWhere(['role_id' => $_GET['callOnly']]);
+        }
+
+        $tokens = $tokensQuery->all();
 
         $called = [];
         $recalled = [];
@@ -512,7 +517,7 @@ class QueuesController extends _MainController
 
         if ($firstLoadedId !== 0) {
             /** @var Queue[] $updatedTokens */
-            $updatedTokens = Queue::find()
+            $updatedTokensQuery = Queue::find()
                 ->where([
                     'and',
                     ['>=', 'id', $firstLoadedId],
@@ -526,8 +531,13 @@ class QueuesController extends _MainController
                             QueueManager::STATUS_ENDED,
                         ]
                     ]
-                ])
-                ->all();
+                ]);
+            
+            if (isset($_GET['callOnly'])) {
+                $updatedTokensQuery->andWhere(['role_id' => $_GET['callOnly']]);
+            }
+
+            $updatedTokens = $updatedTokensQuery->all();
 
             foreach ($updatedTokens as $updatedToken) {
                 switch ($updatedToken->status) {

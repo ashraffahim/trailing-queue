@@ -18,7 +18,7 @@ class MonitorAsset extends AssetBundle
     public $css = [];
 
     public $js = [
-        'js/monitor.js?v=1725092204',
+        'js/monitor.js?v=1725092321',
     ];
 
     public $jsOptions = ['position' => \yii\web\View::POS_END];

@@ -6,6 +6,7 @@ let endedTokens = [];
 let recalledTokens = {};
 let adElements = [];
 let roleColumnElements = [];
+let callOnlySelected = false;
 
 const upcomingTokenColumnCount = 3;
 
@@ -29,10 +30,13 @@ const adsElement = $('#ads');
 
 const roleModalElement = $('#role-modal');
 
-const startButtonElement = $('<button class="text-lg">START</button>');
+const startButtonElement = $('<button class="text-lg mt-5 w-44 btn-classic">START</button>');
 
 $(document).ready(function () {
-    const select = $('<select class="text-lg"></select>');
+    const select = $('<select class="text-lg w-44 p-3"></select>');
+    const callOnlySelectedCheckbox = $('<input type="checkbox" class="mr-3 ml-1 aspect-square w-5 accent-emerald-300">');
+    const callOnlySelectedCheckboxLabel = $('<label class="inline-flex items-center rounded-sm border p-2">Call only selected</label>');
+    callOnlySelectedCheckboxLabel.prepend(callOnlySelectedCheckbox);
 
     window.queueRoles.forEach(role => {
         select.append('<option value="' + role.id + '">' + role.name + '</option>');
@@ -44,7 +48,12 @@ $(document).ready(function () {
         upcomingTokenRole = parseInt(select.val());
     });
 
+    callOnlySelectedCheckbox.change(() => {
+        callOnlySelected = callOnlySelectedCheckbox[0].checked;
+    });
+
     roleSelectElement.append(select);
+    roleSelectElement.append(callOnlySelectedCheckboxLabel);
 
     roleSelectElement.append(startButtonElement);
 
@@ -143,7 +152,7 @@ const startMonitor = () => {
 
         completedFetch = false;
 
-        const response = await fetch(fetchUrl.monitorSocket + '/' + lastLoadedId + '/' + firstLoadedId, {
+        const response = await fetch(fetchUrl.monitorSocket + '/' + lastLoadedId + '/' + firstLoadedId + (callOnlySelected ? `?callOnly=${upcomingTokenRole}` : ''), {
             headers,
             method: 'get',
         });
