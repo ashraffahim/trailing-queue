@@ -7,6 +7,7 @@ let recalledTokens = {};
 let adElements = [];
 let roleColumnElements = [];
 let callOnlySelected = false;
+let lastCallSwitch = false;
 
 const upcomingTokenColumnCount = 3;
 
@@ -27,6 +28,10 @@ const queueContainerElement = $('#queue-container');
 const queueExtraContainerElement = $('#queue-extra-container');
 const queueElement = $('#queue');
 const adsElement = $('#ads');
+const lastCall1TokenElement = $('#last-call-1-token');
+const lastCall1RoomElement = $('#last-call-1-room');
+const lastCall2TokenElement = $('#last-call-2-token');
+const lastCall2RoomElement = $('#last-call-2-room');
 
 const roleModalElement = $('#role-modal');
 
@@ -61,23 +66,6 @@ $(document).ready(function () {
         alert('Your browser is not supported. If google chrome, please upgrade!!');
     }
 });
-
-queueContainerElement.prepend(`
-    <div class="flex items-center h-[72px] text-white" style="background-color: #069;">
-        <div class="text-4xl w-1/3">Token</div>
-        <div class="text-4xl w-1/3">Level</div>
-        <div class="text-4xl w-1/3">Count/Room</div>
-    </div>
-`);
-
-queueMonitorElement.prepend(`
-    <div class="flex text-white" style="background-color: #069;">
-        <div class="w-full h-[72px] flex items-center justify-center text-4xl uppercase font-bold p-3">
-            <img src="/images/bangladesh-gov.png" class="h-[72px] mr-3">
-            Consulate General of Bangladesh, Dubai
-        </div>
-    </div>
-`);
 
 // Bangladesh embassy logo in first slide
 fixedAds.forEach((fixedAd, index) => {
@@ -298,7 +286,7 @@ const textToSpeech = speak => {
 }
 
 const insertNewRowInQueue = (token) => {
-    const row = $(`<div data-id="${token.id}" class="text-3xl font-bold row-in-queue new-row-in-queue"></div>`);
+    const row = $(`<div data-id="${token.id}" class="text-5xl font-bold row-in-queue new-row-in-queue"></div>`);
 
     row.append(`
         <div class="w-1/3">${token.token}</div>
@@ -307,6 +295,19 @@ const insertNewRowInQueue = (token) => {
     `);
 
     queueElement.prepend(row);
+
+    if (token.role_id === upcomingTokenRole) {
+
+        lastCallSwitch = !lastCallSwitch;
+
+        if (lastCallSwitch) {
+            lastCall1TokenElement.text(token.token);
+            lastCall1RoomElement.text(token.room);
+        } else {
+            lastCall2TokenElement.text(token.token);
+            lastCall2RoomElement.text(token.room);
+        }
+    }
 
     setTimeout(() => {
         row.removeClass('new-row-in-queue');

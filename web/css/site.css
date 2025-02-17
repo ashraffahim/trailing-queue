@@ -1640,10 +1640,6 @@ input[type="number"]::-webkit-outer-spin-button,
   white-space: nowrap;
 }
 
-.rounded {
-  border-radius: 0.25rem;
-}
-
 .rounded-lg {
   border-radius: 0.5rem;
 }
@@ -1674,6 +1670,10 @@ input[type="number"]::-webkit-outer-spin-button,
 
 .border-b {
   border-bottom-width: 1px;
+}
+
+.border-r-2 {
+  border-right-width: 2px;
 }
 
 .border-dashed {
@@ -1722,11 +1722,6 @@ input[type="number"]::-webkit-outer-spin-button,
 .bg-emerald-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(209 250 229 / var(--tw-bg-opacity));
-}
-
-.bg-emerald-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(110 231 183 / var(--tw-bg-opacity));
 }
 
 .bg-emerald-400 {
@@ -1897,11 +1892,6 @@ input[type="number"]::-webkit-outer-spin-button,
   line-height: 2rem;
 }
 
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-}
-
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
@@ -1914,6 +1904,11 @@ input[type="number"]::-webkit-outer-spin-button,
 
 .text-6xl {
   font-size: 3.75rem;
+  line-height: 1;
+}
+
+.text-9xl {
+  font-size: 8rem;
   line-height: 1;
 }
 

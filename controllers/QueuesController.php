@@ -545,6 +545,7 @@ class QueuesController extends _MainController
                         $called[] = [
                             'id' => $updatedToken->id,
                             'token' => $updatedToken->token,
+                            'role_id' => $updatedToken->role_id,
                             'room' => $roomIdToRoom[$updatedToken->room_id]['room'] . ' ' . (!is_null($updatedToken->user) ? $updatedToken->user->desk : ''),
                             'floor' => $roomIdToRoom[$updatedToken->room_id]['floor'],
                         ];
